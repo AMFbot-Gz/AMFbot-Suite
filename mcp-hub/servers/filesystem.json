@@ -1,0 +1,14 @@
+{
+    "id": "filesystem",
+    "name": "Filesystem",
+    "description": "Secure file operations with configurable access controls",
+    "command": "npx",
+    "args": [
+        "-y",
+        "@modelcontextprotocol/server-filesystem"
+    ],
+    "requiredArgs": [
+        "allowedDirectories"
+    ],
+    "documentation": "https://github.com/modelcontextprotocol/servers/tree/main/src/filesystem"
+}

@@ -1,0 +1,13 @@
+{
+    "id": "git",
+    "name": "Git",
+    "description": "Tools to read, search, and manipulate Git repositories",
+    "command": "uvx",
+    "args": [
+        "mcp-server-git"
+    ],
+    "requiredArgs": [
+        "repository"
+    ],
+    "documentation": "https://github.com/modelcontextprotocol/servers/tree/main/src/git"
+}
