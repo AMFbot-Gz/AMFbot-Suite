@@ -11,7 +11,7 @@
 
 **AMFbot is a sovereign AI assistant that runs entirely on your machine, with full system control, multimedia generation, and infinite extensibility via MCP.**
 
-[Quick Start](#-quick-start) • [Features](#-features) • [Architecture](#-architecture) • [Documentation](#-documentation) • [Contributing](#-contributing)
+[Quick Start](#-quick-start) • [Guide d'Installation (FR)](INSTALL_FR.md) • [Features](#-features) • [Architecture](#-architecture) • [Documentation](#-documentation) • [Contributing](#-contributing)
 
 </div>
 
