@@ -14,6 +14,7 @@ import { Ollama } from "ollama";
 import { EventEmitter } from "events";
 import { HardwareDetector, HardwareCapabilities } from "./hardware-detector.js";
 import { RootAccess } from "./root-access.js";
+import { SessionStore } from "./session-store.js";
 
 export interface AgentConfig {
     model: string;
@@ -85,6 +86,7 @@ export class Agent extends EventEmitter {
     private tools: Map<string, AgentTool> = new Map();
     private hardware: HardwareCapabilities | null = null;
     private rootAccess: RootAccess;
+    private sessionStore: SessionStore;
 
     constructor(config: AgentConfig) {
         super();
@@ -99,6 +101,7 @@ export class Agent extends EventEmitter {
 
         this.ollama = new Ollama({ host: this.config.ollamaHost });
         this.rootAccess = new RootAccess();
+        this.sessionStore = new SessionStore();
 
         // Register provided tools
         for (const tool of this.config.tools || []) {
@@ -165,6 +168,7 @@ export class Agent extends EventEmitter {
         };
 
         this.sessions.set(session.id, session);
+        this.sessionStore.saveSession(session); // Persist
         this.emit("session-created", session);
 
         return session;
@@ -173,8 +177,17 @@ export class Agent extends EventEmitter {
     /**
      * Get an existing session
      */
-    getSession(sessionId: string): Session | undefined {
-        return this.sessions.get(sessionId);
+    async getSession(sessionId: string): Promise<Session | undefined> {
+        // Try memory first
+        if (this.sessions.has(sessionId)) {
+            return this.sessions.get(sessionId);
+        }
+        // Try disk
+        const session = await this.sessionStore.getSession(sessionId);
+        if (session) {
+            this.sessions.set(sessionId, session);
+        }
+        return session;
     }
 
     /**
@@ -184,7 +197,7 @@ export class Agent extends EventEmitter {
         sessionId: string,
         userMessage: string
     ): Promise<AsyncGenerator<string, void, unknown>> {
-        const session = this.sessions.get(sessionId);
+        const session = await this.getSession(sessionId); // Await because getSession is async now
         if (!session) {
             throw new Error(`Session ${sessionId} not found`);
         }
@@ -209,6 +222,7 @@ export class Agent extends EventEmitter {
 
         const self = this;
 
+        const validSession = session;
         async function* streamResponse(): AsyncGenerator<string, void, unknown> {
             let fullContent = "";
 
@@ -218,7 +232,8 @@ export class Agent extends EventEmitter {
             }
 
             // Store complete response
-            session.messages.push({ role: "assistant", content: fullContent });
+            validSession.messages.push({ role: "assistant", content: fullContent });
+            await self.sessionStore.saveSession(validSession);
             self.emit("message-complete", { sessionId, content: fullContent });
         }
 
