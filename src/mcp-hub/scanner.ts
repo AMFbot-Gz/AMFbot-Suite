@@ -294,6 +294,35 @@ export class MCPScanner {
     }
 
     /**
+     * Scan for local MCP extensions (.js or .mcp files)
+     */
+    async scanExtensions(): Promise<MCPSuggestion[]> {
+        const suggestions: MCPSuggestion[] = [];
+        const extensionsPath = join(this.homePath, ".amfbot", "extensions");
+
+        try {
+            await access(extensionsPath);
+            const extensionFiles = await glob("*.{js,mcp}", { cwd: extensionsPath });
+
+            for (const file of extensionFiles) {
+                const name = basename(file);
+                suggestions.push({
+                    id: `extension-\${name}`,
+                    name: `Extension: \${name}`,
+                    description: `Local AMFbot extension found in \${extensionsPath}`,
+                    type: "custom",
+                    installCommand: `node \${join(extensionsPath, file)}`,
+                    config: { path: join(extensionsPath, file) },
+                    confidence: 1.0,
+                });
+            }
+        } catch {
+            // No extensions folder
+        }
+        return suggestions;
+    }
+
+    /**
      * Generate MCP config entry for a suggestion
      */
     generateConfigEntry(suggestion: MCPSuggestion): Record<string, unknown> {

@@ -8,7 +8,8 @@
     "amfbot": "dist/cli/index.js"
   },
   "scripts": {
-    "build": "tsc",
+    "build": "tsdown src/cli/index.ts src/server/index.ts --format esm --clean",
+    "build:fast": "tsdown src/cli/index.ts --no-dts",
     "cli:dev": "tsx watch src/cli/index.ts",
     "start": "node dist/cli/index.js",
     "test": "vitest",
@@ -65,7 +66,9 @@
     "ollama": "^0.5.12",
     "ora": "^8.1.1",
     "systeminformation": "^5.23.5",
+    "tabtab": "^3.0.2",
     "telegraf": "^4.16.3",
+    "undici": "^7.19.2",
     "ws": "^8.18.0",
     "zod": "^3.23.8"
   },
@@ -78,6 +81,7 @@
     "@typescript-eslint/parser": "^8.18.0",
     "eslint": "^9.17.0",
     "prettier": "^3.4.2",
+    "tsdown": "^0.20.1",
     "tsx": "^4.19.2",
     "typescript": "^5.7.2",
     "vitest": "^2.1.8"

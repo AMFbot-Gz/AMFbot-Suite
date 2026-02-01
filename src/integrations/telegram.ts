@@ -1,46 +1,74 @@
-/**
- * Telegram Integration for AMFbot
- * 
- * Allows users to interact with AMFbot via Telegram.
- * This acts as a bridge between the Telegram Bot API and the Agent Core.
- */
-
 import { Agent } from '../core/agent.js';
-// import { Telegraf } from 'telegraf'; // TODO: Add dependency
+import { Telegraf } from 'telegraf';
+import chalk from 'chalk';
 
 export class TelegramBot {
     private token: string;
     private agent: Agent;
-    private bot: any; // Telegraf instance
+    private bot: Telegraf;
 
     constructor(token: string, agent: Agent) {
         this.token = token;
         this.agent = agent;
+        this.bot = new Telegraf(this.token);
     }
 
     async start() {
-        console.log('Starting Telegram Bot...');
-        // this.bot = new Telegraf(this.token);
+        console.log(chalk.blue('📪 Telegram: Initializing bot...'));
 
-        // this.bot.on('text', async (ctx) => {
-        //     const userId = ctx.from.id.toString();
-        //     const text = ctx.message.text;
-        //     
-        //     // Get or create session
-        //     let session = this.agent.getSession(userId);
-        //     if (!session) {
-        //         session = this.agent.createSession({ telegramId: userId });
-        //     }
+        this.bot.start((ctx) => ctx.reply('Welcome to AMFbot. I am your sovereign assistant.'));
 
-        //     // Chat with agent
-        //     const stream = await this.agent.chat(session.id, text);
-        //     
-        //     for await (const chunk of stream) {
-        //         // Send chunks or buffer for Telegram
-        //         // Telegram doesn't support streaming well, so we might buffer
-        //     }
-        // });
+        this.bot.on('text', async (ctx) => {
+            const chatId = ctx.chat.id.toString();
+            const threadId = ctx.message.message_thread_id?.toString() || 'default';
+            const text = ctx.message.text;
 
-        // this.bot.launch();
+            // Context Management: Unique session per chat + thread
+            const sessionLookupKey = `tg:\${chatId}:\${threadId}`;
+
+            // Find session by metadata
+            let session = await this.findSessionByOrigin(sessionLookupKey);
+
+            if (!session) {
+                console.log(chalk.dim(`📪 Telegram: Creating new session for \${sessionLookupKey}`));
+                session = this.agent.createSession({
+                    origin: 'telegram',
+                    lookupKey: sessionLookupKey,
+                    chatId,
+                    threadId
+                });
+            }
+
+            try {
+                // Buffer chunks for Telegram as it doesn't support streaming well for text messages
+                const stream = await this.agent.chat(session.id, text);
+                let fullResponse = "";
+                // For better UX, we could send an initial message and edit it, 
+                // but for Telegram, simple buffering is safer for performance.
+                for await (const chunk of stream) {
+                    fullResponse += chunk;
+                }
+
+                await ctx.reply(fullResponse, {
+                    reply_parameters: { message_id: ctx.message.message_id }
+                });
+            } catch (error) {
+                console.error(chalk.red('📪 Telegram: Error during chat'), error);
+                await ctx.reply(`Error: \${error instanceof Error ? error.message : "Internal error"}`);
+            }
+        });
+
+        this.bot.launch();
+        console.log(chalk.green('📪 Telegram: Bot is live and listening.'));
+
+        // Enable graceful stop
+        process.once('SIGINT', () => this.bot.stop('SIGINT'));
+        process.once('SIGTERM', () => this.bot.stop('SIGTERM'));
+    }
+
+    private async findSessionByOrigin(lookupKey: string) {
+        const sessions = await this.agent.listSessions();
+        return sessions.find(s => s.metadata?.lookupKey === lookupKey);
     }
 }
+

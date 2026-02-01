@@ -81,6 +81,17 @@ app.post('/api/chat', async (c) => {
   });
 });
 
+// List Sessions Endpoint
+app.get('/api/sessions', async (c) => {
+  try {
+    const sessions = await agent.listSessions();
+    return c.json({ sessions });
+  } catch (e) {
+    console.error('Failed to list sessions', e);
+    return c.json({ sessions: [] });
+  }
+});
+
 console.log('Server is running on port 3001');
 
 serve({
