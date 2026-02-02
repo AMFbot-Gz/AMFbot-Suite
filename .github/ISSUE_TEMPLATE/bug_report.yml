@@ -1,37 +1,42 @@
-name: "🐛 Rapport de Bug"
-description: Signalez un dysfonctionnement du système Sovereign.
-title: "[BUG] Description courte du problème"
-labels: ["bug", "triage"]
+name: "🐛 Rapport de Bug Sovereign"
+description: Signalez une défaillance du noyau ou de l'IA.
+title: "[BUG] "
+labels: ["bug", "triage-needed"]
 body:
   - type: markdown
     attributes:
       value: |
-        Merci de signaler ce bug ! Veuillez fournir autant de détails que possible.
-  - type: textarea
-    id: description
+        Merci de nous aider à stabiliser AMF-OS ! 🛸
+  - type: dropdown
+    id: component
     attributes:
-      label: Description du Bug
-      description: Une description claire et concise de ce qui ne va pas.
+      label: Composant Affecté
+      options:
+        - Kernel (Event-Loop/Events)
+        - Orchestrator (Reasoning/Logic)
+        - Memory (LanceDB/Vector)
+        - Adapter (Telegram/Ollama)
+        - Setup/Installer
     validations:
       required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Contexte Matériel
+      description: RAM, GPU, Version de Bun, Modèle utilisé.
+      placeholder: |
+        - Mac M2 16GB
+        - Bun 1.1.0
+        - llama4:8b (q8_0)
   - type: textarea
     id: reproduction
     attributes:
-      label: Étapes pour Reproduire
-      description: Comment pouvons-nous reproduire ce comportement ?
-      placeholder: |
-        1. Lancez 'bun start'
-        2. Tapez '...'
-        3. Voyez l'erreur '...'
+      label: Étapes de Reproduction
+      description: Comment déclencher l'erreur ?
     validations:
       required: true
   - type: textarea
-    id: environment
-    attributes:
-      label: Environnement
-      description: OS, version de Bun, modèle utilisé (llama4:8b, etc.)
-  - type: textarea
     id: logs
     attributes:
-      label: Logs d'Audit (Sentinel)
-      description: Copiez ici les logs pertinents de ~/.amf-os/audit.json si possible.
+      label: Logs Sentinel (Audit)
+      description: Copiez les lignes pertinentes de votre audit.json.

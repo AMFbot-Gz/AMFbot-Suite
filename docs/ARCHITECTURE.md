@@ -1,80 +1,36 @@
-# AMFbot - Comment ça marche ?
+# 🏗️ Architecture Technique : AMF-OS Sovereign Elite
 
-## 🧠 Architecture Simplifiée
+Ce document détaille les entrailles technologiques de l'AMF-OS, conçu pour la performance, l'autonomie et la sécurité.
 
-```mermaid
-graph TB
-    subgraph "Interface Utilisateur"
-        CLI[CLI amfbot]
-        WEB[Interface Web]
-    end
-    
-    subgraph "Cerveau - LLM"
-        HYBRID[Client Hybride]
-        ANTHROPIC[Anthropic Claude<br/>Computer Use]
-        OLLAMA[Ollama Local<br/>Chat Simple]
-    end
-    
-    subgraph "Corps - Contrôle Système"
-        AGENT[Agent Core]
-        ROOT[Root Access]
-        MCP[Hub MCP]
-    end
-    
-    subgraph "Outils Créatifs"
-        VIDEO[LTX-Video<br/>Génération Vidéo]
-        IMAGE[Flux.1<br/>Génération Image]
-    end
-    
-    CLI --> AGENT
-    WEB --> AGENT
-    AGENT --> HYBRID
-    HYBRID --> ANTHROPIC
-    HYBRID --> OLLAMA
-    AGENT --> ROOT
-    AGENT --> MCP
-    AGENT --> VIDEO
-    AGENT --> IMAGE
-```
+## 🌀 Le Micro-Kernel Événementiel
+L'AMF-OS n'est pas une application monolithique ; c'est un **noyau réactif** basé sur l'événementiel.
 
-## 🔄 Flux de Décision Hybride
+*   **Runtime** : Bun (moteur JavaScript/TypeScript ultra-performant).
+*   **Threading (Swarms)** : Utilisation massive de `Bun.Worker`. Chaque tâche lourde (surveillance, inférence longue, tâches système) est déportée dans un thread séparé pour garantir que le Kernel ne gèle jamais.
+*   **Gestionnaire d'Événements** : Basé sur `EventEmitter` natif, permettant une communication fluide entre les workers et l'orchestrateur.
 
-```
-Requête Utilisateur
-        ↓
-  ┌─────────────────┐
-  │ Analyse Tâche   │
-  └────────┬────────┘
-           ↓
-    ┌──────┴──────┐
-    │ Complexe ?  │
-    └──────┬──────┘
-           │
-     ┌─────┴─────┐
-     │           │
-   Oui         Non
-     │           │
-     ↓           ↓
-┌─────────┐  ┌─────────┐
-│ Claude  │  │ Ollama  │
-│ (API)   │  │ (Local) │
-└─────────┘  └─────────┘
-```
+## 📡 Le Bus SSE (Server-Sent Events)
+Pour atteindre un **TTFT (Time To First Token) < 150ms**, nous utilisons un bus de données bidirectionnel.
+*   **Fichier** : `src/kernel/bus.ts`
+*   **Fonctionnement** : Au lieu d'attendre la fin d'une génération LLM, le bus capture les chunks de l'OllamaAdapter et les diffuse instantanément via un stream SSE. Cela permet une interface utilisateur "vivante" sans temps mort.
 
-## 📂 Organisation des Fichiers
+## 🩹 Boucle ReAct & Auto-Correction
+L'autonomie d'AMF-OS repose sur sa capacité à comprendre et corriger ses erreurs.
+*   **Fichier** : `src/autonomy/react.ts`
+*   **Le Cycle** :
+    1.  **Instruction** : L'utilisateur donne une commande.
+    2.  **Validation** : Le `Sandbox` vérifie la syntaxe et la sécurité (LFI, RFI, Root Access).
+    3.  **Exécution** : Tentative d'exécution via `execa`.
+    4.  **Analyse** : Si `stderr` != null, l'erreur est envoyée au modèle `qwen3:coder`.
+    5.  **Correction** : Le modèle propose une nouvelle syntaxe.
+    6.  **Boucle** : Recommence jusqu'à succès (max 3 tentatives).
 
-| Dossier | Contenu | Langage |
-|---------|---------|---------|
-| `src/core/` | Runtime Agent | TypeScript |
-| `src/llm/` | Clients LLM | TypeScript |
-| `src/cli/` | Interface CLI | TypeScript |
-| `modules/media-gen/` | IA Image/Vidéo | Python |
-| `mcp-hub/` | Serveurs MCP | TypeScript |
-| `scripts/` | Installation | Bash |
+## 🧠 Gestion de la Mémoire (Tactical Knowledge)
+Contrairement aux agents classiques, AMF-OS apprend de ses succès.
+*   **LanceDB** : Stockage vectoriel local. Chaque commande réussie est indexée.
+*   **KeyDB/Redis** : Utilisé comme cache "chaud" pour l'état du système et les sessions en cours.
 
-## 🔐 Sécurité
-
-1. **Isolation Docker** : Chaque module dans son conteneur
-2. **Confirmation Sudo** : Toute commande privilégiée demande approbation
-3. **Audit Log** : Historique de toutes les actions
-4. **Local First** : Données sur votre machine, pas dans le cloud
+## 🛡️ Isolation Sandbox
+L'exécution n'est jamais directe sur l'hôte en mode "Production".
+*   **Virtualisation** : Préparation pour l'intégration Firecracker VMM pour une isolation totale par micro-VM (WIP).
+*   **Restiction** : Utilisation de `chroot` et de namespaces Linux pour limiter la visibilité du système de fichiers.

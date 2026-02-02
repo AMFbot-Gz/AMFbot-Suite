@@ -8,48 +8,71 @@
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
 [![Runtime](https://img.shields.io/badge/Runtime-Bun-fastactive.svg)](https://bun.sh/)
 [![Security](https://img.shields.io/badge/Security-Zero--Trust-red.svg)](#-security)
-[![Architecture](https://img.shields.io/badge/Arch-Micro--Kernel-magenta.svg)](#-architecture)
+[![Tests](https://img.shields.io/github/actions/workflow/status/AMFbot-Gz/AMFbot-Suite/ci.yml?label=tests)](https://github.com/AMFbot-Gz/AMFbot-Suite/actions)
+[![Version](https://img.shields.io/badge/Version-v2026.1.1-magenta.svg)](#-versions--compatibilité)
 
 **AMF-OS est une station de travail IA ultra-rapide, autonome et souveraine.**
 *Elle ne se contente pas de discuter : elle agit, s'auto-répare et évolue entièrement sur votre matériel.*
 
-[Démarrage Rapide](#-démarrage-rapide) • [Guide d'Installation (FR)](INSTALL_FR.md) • [Architecture](#-architecture-blueprint-20261) • [Fonctionnalités](#-capacités-élites)
+[Démarrage Rapide](#-démarrage-rapide) • [Guide d'Installation (FR)](INSTALL_FR.md) • [Architecture](#-architecture-blueprint-20261) • [Pour les Développeurs](#-pour-les-développeurs)
 
 </div>
 
 ---
 
-## ⚡ Démarrage Rapide (One-Click)
+## 🎯 Pour qui ?
+*   **🧑‍💻 Devs Solo** : Automatisez votre workflow local sans quitter votre terminal.
+*   **🛡️ Ops/SysAdmin** : Gérez vos serveurs via une interface souveraine sécurisée.
+*   **🧪 Labs IA On-Prem** : Déployez une pile IA complète et privée en quelques secondes.
 
-Destiné au "commun des mortels", cet installateur s'occupe de tout : détection de votre matériel (GPU NVIDIA/Mac M1-M3), installation de Bun, Docker et synchronisation des modèles.
+---
+
+## 📋 Prérequis Minimaux
+| Composant | Recommandé (Performance Elite) | Minimum (Mode Efficacité) |
+|-----------|-------------------------------|---------------------------|
+| **OS**    | macOS 14+ / Ubuntu 22.04      | macOS 13+ / Debian 11     |
+| **RAM**   | 32 Go (Unified/DDR5)          | 16 Go                     |
+| **GPU**   | NVIDIA 12Go VRAM / Apple M2+  | CPU-Only compatible       |
+| **Espace**| 100 Go SSD (Modèles LLM)      | 40 Go                     |
+
+---
+
+## ⚡ Démarrage Rapide
+
+### Option A : Installation Directe (Recommandé)
+L'installateur intelligent détecte votre GPU et optimise les modèles automatiquement.
 
 ```bash
 # Clonez et entrez dans la matrice
 git clone https://github.com/AMFbot-Gz/AMFbot-Suite.git && cd AMFbot-Suite
 
-# Lancez l'installation automatique (Hardware-Aware)
+# Lancez l'installation automatique
 bash setup/install.sh
 
 # Démarrez le Kernel
 bun start
 ```
 
+### Option B : 100% Docker (Isolation Totale)
+Pour ceux qui préfèrent ne rien installer sur l'hôte, utilisez le mode conteneurisé.
+
+```bash
+docker-compose up -d --build
+```
+*Note : Assurez-vous d'avoir configuré votre `.env` au préalable.*
+
 ---
 
-## ✨ Capacités Élites
+## 🎬 Scénarios d'Usage
 
-### 🌀 Micro-Kernel Événementiel
-- **Inférence Ultra-Rapide** : Latence <150ms via le bus SSE natif de Bun.
-- **Speculative Decoding** : Pré-génération par `qwen3:0.5b` validée instantanément par `llama4:8b`.
-- **Swarm Intelligence** : Utilisation de workers parallèles pour la surveillance et l'exécution synchrone.
+### 📁 RAG Local Instantané
+> "Analyse mon dossier `/src/kernel` et explique-moi comment la gestion de la mémoire est isolée."
 
-### 🩹 Auto-Réparation (Self-Healing)
-- **Boucle ReAct Autonome** : Analyse les erreurs système, génère un correctif et ré-exécute sans intervention humaine.
-- **Rollback Atomique** : En cas de défaillance critique, le système revient instantanément à son dernier état stable via Git snapshots.
+### 🔧 Contrôle Système Autonome
+> "Vérifie les logs nginx, identifie les IPs agressives et bloque-les via iptables après confirmation."
 
-### 🧠 Mémoire Souveraine (Local RAG)
-- **LanceDB Enterprise** : Stockage vectoriel local haute performance.
-- **Apprentissage Adaptatif** : Mémorise vos workflows et préférences pour devenir plus efficace à chaque session.
+### 🎨 Génération Multimédia
+> "Crée une image de couverture pour ma doc au format 16:9 style cyber-minimalist noir et magenta."
 
 ---
 
@@ -68,33 +91,32 @@ graph TD
 
 ---
 
-## 📦 Stack Technique "Sovereign"
+## �️ Pour les Développeurs
 
-| Couche | Technologie | Rôle |
-|-----------|------------|------|
-| **Runtime** | Bun | Latence zéro, Workers natifs |
-| **Logic** | llama4:8b | Raisonnement complexe & Consensus |
-| **Coding** | qwen3:coder | Génération & Patching de code |
-| **Cache** | KeyDB | Hot-cache d'état ultra-rapide |
-| **Memory** | LanceDB | Base de données vectorielle locale |
+### Arborescence
+*   `src/kernel/` : Le cœur réactif. Gère l'événementiel et les workers parallèles.
+*   `src/core/` : L'orchestrateur logique, le routage des modèles et la spéculation.
+*   `src/autonomy/` : Moteurs de self-healing, sandbox (Firecracker) et régénération.
+*   `src/memory/` : Gestion LanceDB et stockage des patterns de succès.
+*   `src/adapters/` : Connecteurs externes (Telegram, Ollama, Media-Gen).
 
----
-
-## 🛡️ Sécurité & Confidentialité
-- **100% Hors-ligne** : Vos données et vos modèles ne quittent jamais votre machine.
-- **Sentinel Audit** : Surveillance proactive et logs d'audit JSON pour une transparence totale.
-- **Sandbox Isolé** : Exécution sécurisée des commandes système via VM/Firecracker.
+### Mode Contribution
+Consultez le guide [CONTRIBUTING.md](CONTRIBUTING.md) pour configurer votre environnement de test.
 
 ---
 
-## 🤝 Contribuer
-Rejoignez l'élite. AMF-OS est une plateforme communautaire ouverte. Consultez [CONTRIBUTING.md](CONTRIBUTING.md) pour nous aider à bâtir le futur de l'IA souveraine.
+## 📈 Versions & Compatibilité
+
+| Tag | Date | Évolutions Clés | CPU/GPU Focus |
+|-----|------|-----------------|---------------|
+| **v2026.1.1** | Fév 2026 | Refonte UX + Installateur Robuste | Hybrid (Metal/NVIDIA) |
+| **v2026.1.0** | Jan 2026 | Initial Sovereign Blueprint | Multi-Node focus |
 
 ---
 
 <div align="center">
 
-**Maîtrisez votre machine. Soyez souverain.**
+**Maîtrisez votre machine. Soyons souverains.**
 [⭐ Star us on GitHub](https://github.com/AMFbot-Gz/AMFbot-Suite)
 
 </div>
