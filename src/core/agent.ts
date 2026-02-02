@@ -1,496 +1,57 @@
-/**
- * AMFbot Core Agent Runtime
- *
- * The central agent runtime that orchestrates all AMFbot capabilities:
- * - Session management
- * - Tool execution
- * - LLM integration via Ollama
- * - Event handling
- *
- * @license Apache-2.0
- */
+import { ModelRouter } from "./router";
+import { SpeculativeEngine } from "./speculative";
+import { env } from "../config/env";
+import chalk from "chalk";
 
-import { Ollama } from "ollama";
-import { EventEmitter } from "events";
-import path from "path";
-import fs from "fs-extra";
-import { HardwareDetector, HardwareCapabilities } from "./hardware-detector.js";
-import { RootAccess } from "./root-access.js";
-import { SessionStore } from "./session-store.js";
+export class AMFAgent {
+    private router = new ModelRouter();
+    private speculator = new SpeculativeEngine();
 
-// Security: Define allowed root for file operations (optional but recommended)
-const WORKSPACE_ALLOW_LIST = [
-    process.cwd(),
-    process.env.HOME || "",
-    "/tmp"
-].filter(p => p !== "");
+    async chat(prompt: string, onUpdate: (chunk: string) => void) {
+        console.log(chalk.dim(`🔍 Routing query: "${prompt.slice(0, 30)}..."`));
 
-export interface AgentConfig {
-    model: string;
-    ollamaHost?: string;
-    systemPrompt?: string;
-    tools?: AgentTool[];
-    maxTokens?: number;
-    temperature?: number;
-}
+        const { model, temperature } = this.router.route(prompt);
 
-export interface AgentTool {
-    name: string;
-    description: string;
-    parameters: Record<string, ToolParameter>;
-    handler: (params: Record<string, unknown>) => Promise<unknown>;
-}
-
-export interface ToolParameter {
-    type: "string" | "number" | "boolean" | "array" | "object";
-    description: string;
-    required?: boolean;
-    default?: unknown;
-}
-
-export interface Message {
-    role: "user" | "assistant" | "system" | "tool";
-    content: string;
-    toolCalls?: ToolCall[];
-    toolResults?: ToolResult[];
-}
-
-export interface ToolCall {
-    id: string;
-    name: string;
-    arguments: Record<string, unknown>;
-}
-
-export interface ToolResult {
-    callId: string;
-    result: unknown;
-    error?: string;
-}
-
-export interface Session {
-    id: string;
-    messages: Message[];
-    createdAt: Date;
-    lastActiveAt: Date;
-    metadata: Record<string, unknown>;
-}
-
-const DEFAULT_SYSTEM_PROMPT = `You are AMFbot, a powerful sovereign AI assistant with full system control capabilities.
-
-You have access to the following abilities:
-- Execute system commands (with user confirmation for sudo operations)
-- Generate images using Flux.1
-- Generate videos using LTX-Video
-- Manage files and directories
-- Connect to external services via MCP
-
-Always be helpful, precise, and transparent about your actions. When performing system operations, explain what you're about to do before executing.
-
-IMPORTANT: For any operation that requires elevated privileges (sudo), you MUST request explicit user confirmation first.`;
-
-export class Agent extends EventEmitter {
-    private ollama: Ollama;
-    private config: AgentConfig;
-    private sessions: Map<string, Session> = new Map();
-    private tools: Map<string, AgentTool> = new Map();
-    private hardware: HardwareCapabilities | null = null;
-    private rootAccess: RootAccess;
-    private sessionStore: SessionStore;
-
-    constructor(config: AgentConfig) {
-        super();
-        this.config = {
-            model: config.model || "llama3.2",
-            ollamaHost: config.ollamaHost || "http://localhost:11434",
-            systemPrompt: config.systemPrompt || DEFAULT_SYSTEM_PROMPT,
-            maxTokens: config.maxTokens || 4096,
-            temperature: config.temperature || 0.7,
-            tools: config.tools || [],
-        };
-
-        this.ollama = new Ollama({ host: this.config.ollamaHost });
-        this.rootAccess = new RootAccess();
-        this.sessionStore = new SessionStore();
-
-        // Register provided tools
-        for (const tool of this.config.tools || []) {
-            this.registerTool(tool);
-        }
-
-        // Register built-in tools
-        this.registerBuiltInTools();
-    }
-
-    /**
-     * Initialize the agent and detect hardware capabilities
-     */
-    async initialize(): Promise<void> {
-        this.emit("initializing");
-
-        // Detect hardware
-        const detector = new HardwareDetector();
-        this.hardware = await detector.detect();
-
-        this.emit("hardware-detected", this.hardware);
-
-        // Verify Ollama connection
-        try {
-            await this.ollama.list();
-            this.emit("ollama-connected");
-        } catch (error) {
-            this.emit("ollama-error", error);
-            throw new Error(
-                `Failed to connect to Ollama at ${this.config.ollamaHost}: ${error}`
-            );
-        }
-
-        // Pull model if not available
-        const models = await this.ollama.list();
-        const hasModel = models.models.some((m) =>
-            m.name.startsWith(this.config.model)
-        );
-
-        if (!hasModel) {
-            this.emit("model-pulling", this.config.model);
-            await this.ollama.pull({ model: this.config.model });
-            this.emit("model-pulled", this.config.model);
-        }
-
-        this.emit("initialized", { hardware: this.hardware });
-    }
-
-    /**
-     * Create a new session
-     */
-    createSession(metadata: Record<string, unknown> = {}): Session {
-        const session: Session = {
-            id: crypto.randomUUID(),
-            messages: [
-                {
-                    role: "system",
-                    content: this.config.systemPrompt || DEFAULT_SYSTEM_PROMPT,
-                },
-            ],
-            createdAt: new Date(),
-            lastActiveAt: new Date(),
-            metadata,
-        };
-
-        this.sessions.set(session.id, session);
-        this.sessionStore.saveSession(session); // Persist
-        this.emit("session-created", session);
-
-        return session;
-    }
-
-    /**
-     * List all sessions
-     */
-    async listSessions(): Promise<Session[]> {
-        // Combine memory and disk
-        const memorySessions = Array.from(this.sessions.values());
-        // In a real app we'd fetch from store and merge
-        // For now just return memory sessions or what store provides
-        // this.sessionStore.getAll() -- checking session-store.ts
-        // I'll assume sessionStore has something or I need to check it.
-        // Let's just return memory for now as a start.
-
-        // Actually, let's try to fetch from store if method exists
-        // checking session-store.ts content (it was listed but not viewed? no I viewed agent.ts only)
-        // I viewed session-store.ts? No.
-        // I'll just return memory sessions for now to be safe.
-        return memorySessions.sort((a, b) => b.lastActiveAt.getTime() - a.lastActiveAt.getTime());
-    }
-
-    /**
-     * Get an existing session
-     */
-    async getSession(sessionId: string): Promise<Session | undefined> {
-        // Try memory first
-        if (this.sessions.has(sessionId)) {
-            return this.sessions.get(sessionId);
-        }
-        // Try disk
-        const session = await this.sessionStore.getSession(sessionId);
-        if (session) {
-            this.sessions.set(sessionId, session);
-        }
-        return session;
-    }
-
-    /**
-     * Send a message and get a response
-     */
-    async chat(
-        sessionId: string,
-        userMessage: string,
-        context: { origin?: string } = {}
-    ): Promise<AsyncGenerator<string, void, unknown>> {
-        const session = await this.getSession(sessionId); // Await because getSession is async now
-        if (!session) {
-            throw new Error(`Session ${sessionId} not found`);
-        }
-
-        // Add user message
-        session.messages.push({ role: "user", content: userMessage });
-        session.lastActiveAt = new Date();
-
-        // Generate response
-        const response = await this.ollama.chat({
-            model: this.config.model,
-            messages: session.messages.map((m) => ({
-                role: m.role as "user" | "assistant" | "system",
-                content: m.content,
-            })),
-            stream: true,
-            options: {
-                temperature: this.config.temperature,
-                num_predict: this.config.maxTokens,
-            },
-        });
-
-        const self = this;
-
-        const validSession = session;
-        async function* streamResponse(): AsyncGenerator<string, void, unknown> {
-            let fullContent = "";
-
-            for await (const chunk of response) {
-                fullContent += chunk.message.content;
-                yield chunk.message.content;
+        // Speculative phase (optional/speed-up)
+        if (model !== "qwen3:0.5b") {
+            for await (const draft of this.speculator.draft(prompt, model)) {
+                onUpdate(chalk.gray(draft.content));
             }
-
-            // Store complete response
-            validSession.messages.push({ role: "assistant", content: fullContent });
-            await self.sessionStore.saveSession(validSession);
-            self.emit("message-complete", { sessionId, content: fullContent });
         }
 
-        return streamResponse();
-    }
+        console.log(chalk.blue(`🚀 Executing with ${model}...`));
 
-    async executeTool(
-        toolName: string,
-        params: Record<string, unknown>,
-        context: { userId?: string; sessionId?: string } = {}
-    ): Promise<unknown> {
-        const tool = this.tools.get(toolName);
-        if (!tool) {
-            throw new Error(`Tool ${toolName} not found`);
-        }
+        const response = await fetch(`${env.OLLAMA_HOST}/api/chat`, {
+            method: "POST",
+            body: JSON.stringify({
+                model: model,
+                messages: [{ role: "user", content: prompt }],
+                options: { temperature },
+                stream: true,
+            }),
+        });
 
-        // Advanced Audit Logging
-        const auditLog = {
-            timestamp: new Date().toISOString(),
-            tool: toolName,
-            params,
-            accountId: context.userId || "system", // Normalized Account ID
-            sessionId: context.sessionId || "none",
-            deliveryContext: context.userId?.startsWith('tg:') ? 'telegram' : 'local',
-            status: "executing"
-        };
-        this.logAudit(auditLog);
+        if (!response.body) return;
 
-        this.emit("tool-executing", { name: toolName, params });
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder();
 
-        try {
-            const result = await tool.handler(params);
-            this.emit("tool-complete", { name: toolName, result });
-            this.logAudit({ ...auditLog, status: "completed", result });
-            return result;
-        } catch (error) {
-            const errorMessage = error instanceof Error ? error.message : String(error);
-            this.emit("tool-error", { name: toolName, error });
-            this.logAudit({ ...auditLog, status: "failed", error: errorMessage });
-            throw error;
-        }
-    }
+        // Clear draft and show real response
+        onUpdate("\r" + " ".repeat(100) + "\r");
 
-    /**
-     * Audit log implementation
-     */
-    private async logAudit(entry: any): Promise<void> {
-        const auditFile = path.join(process.env.HOME || ".", ".amfbot", "audit.log");
-        try {
-            await fs.ensureDir(path.dirname(auditFile));
-            await fs.appendFile(auditFile, JSON.stringify(entry) + "\n");
-        } catch (err) {
-            console.error("Failed to write audit log:", err);
-        }
-    }
+        while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
 
-    /**
-     * Path sanitization (LFI Protection)
-     */
-    private sanitizePath(inputPath: string): string {
-        const fullPath = path.resolve(inputPath);
-
-        // Ensure no directory traversal via normalization
-        const normalizedPath = path.normalize(fullPath);
-
-        // Check against WORKSPACE_ALLOW_LIST
-        const isAllowed = WORKSPACE_ALLOW_LIST.some(allowed =>
-            normalizedPath === allowed || normalizedPath.startsWith(path.join(allowed, path.sep))
-        );
-
-        if (!isAllowed) {
-            throw new Error(`Security Exception: Access to path \${normalizedPath} is restricted. Path must be within allowed workspaces.`);
-        }
-
-        return normalizedPath;
-    }
-
-    /**
-     * Register a new tool
-     */
-    registerTool(tool: AgentTool): void {
-        this.tools.set(tool.name, tool);
-        this.emit("tool-registered", tool.name);
-    }
-
-    /**
-     * Get hardware capabilities
-     */
-    getHardwareCapabilities(): HardwareCapabilities | null {
-        return this.hardware;
-    }
-
-    /**
-     * Get root access module for privileged operations
-     */
-    getRootAccess(): RootAccess {
-        return this.rootAccess;
-    }
-
-    /**
-     * Register built-in tools
-     */
-    private registerBuiltInTools(): void {
-        // Shell command execution
-        this.registerTool({
-            name: "execute_command",
-            description:
-                "Execute a shell command. For sudo commands, user confirmation is required.",
-            parameters: {
-                command: {
-                    type: "string",
-                    description: "The shell command to execute",
-                    required: true,
-                },
-                cwd: {
-                    type: "string",
-                    description: "Working directory for the command",
-                    required: false,
-                },
-                requiresSudo: {
-                    type: "boolean",
-                    description: "Whether this command requires sudo",
-                    required: false,
-                    default: false,
-                },
-            },
-            handler: async (params) => {
-                const { command, cwd, requiresSudo } = params as {
-                    command: string;
-                    cwd?: string;
-                    requiresSudo?: boolean;
-                };
-
-                if (requiresSudo) {
-                    return this.rootAccess.executeWithConfirmation(
-                        command,
-                        `Execute sudo command: ${command}`
-                    );
+            const chunk = decoder.decode(value);
+            try {
+                const json = JSON.parse(chunk);
+                if (json.message?.content) {
+                    onUpdate(json.message.content);
                 }
-
-                const { execa } = await import("execa");
-                // Optimization: Use 'all' for combined stream and prevent stderr buffering issues on macOS
-                const result = await execa(command, {
-                    shell: true,
-                    cwd: cwd || process.cwd(),
-                    all: true,
-                    maxBuffer: 10 * 1024 * 1024, // 10MB limit
-                });
-
-                return {
-                    stdout: result.stdout,
-                    stderr: result.stderr,
-                    all: result.all,
-                    exitCode: result.exitCode,
-                };
-            },
-        });
-
-        // File system operations
-        this.registerTool({
-            name: "read_file",
-            description: "Read the contents of a file (LFI Protected)",
-            parameters: {
-                path: {
-                    type: "string",
-                    description: "Path to the file to read",
-                    required: true,
-                },
-            },
-            handler: async (params) => {
-                const { readFile } = await import("fs/promises");
-                const safePath = this.sanitizePath(params.path as string);
-                const content = await readFile(safePath, "utf-8");
-                return { content };
-            },
-        });
-
-        this.registerTool({
-            name: "write_file",
-            description: "Write content to a file (LFI Protected)",
-            parameters: {
-                path: {
-                    type: "string",
-                    description: "Path to the file to write",
-                    required: true,
-                },
-                content: {
-                    type: "string",
-                    description: "Content to write to the file",
-                    required: true,
-                },
-            },
-            handler: async (params) => {
-                const { writeFile, mkdir } = await import("fs/promises");
-                const { dirname } = await import("path");
-
-                const safePath = this.sanitizePath(params.path as string);
-                await mkdir(dirname(safePath), { recursive: true });
-                await writeFile(safePath, params.content as string, "utf-8");
-
-                return { success: true, path: safePath };
-            },
-        });
-
-        // System info
-        this.registerTool({
-            name: "get_system_info",
-            description: "Get information about the current system",
-            parameters: {},
-            handler: async () => {
-                return {
-                    hardware: this.hardware,
-                    platform: process.platform,
-                    arch: process.arch,
-                    nodeVersion: process.version,
-                };
-            },
-        });
-    }
-
-    /**
-     * Shutdown the agent
-     */
-    async shutdown(): Promise<void> {
-        this.emit("shutting-down");
-        this.sessions.clear();
-        this.emit("shutdown");
+            } catch (e) {
+                // Handle partial JSON or stream markers
+            }
+        }
     }
 }
-
-export default Agent;

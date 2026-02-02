@@ -1,89 +1,33 @@
 {
-  "name": "amfbot-suite",
-  "version": "1.0.0",
-  "description": "AMFbot - The Ultimate Open Source AI that owns the keys to your computer and the creation tools of tomorrow",
+  "name": "amf-os-sovereign",
+  "version": "2.0.0",
+  "description": "AMF-OS Sovereign AI Workstation - Zero-Lag Architecture",
+  "module": "src/main.ts",
   "type": "module",
-  "main": "dist/cli/index.js",
-  "bin": {
-    "amfbot": "dist/cli/index.js"
-  },
   "scripts": {
-    "build": "tsdown src/cli/index.ts src/server/index.ts --format esm --clean",
-    "build:fast": "tsdown src/cli/index.ts --no-dts",
-    "cli:dev": "tsx watch src/cli/index.ts",
-    "start": "node dist/cli/index.js",
-    "test": "vitest",
-    "test:integration": "vitest run --config vitest.integration.config.ts",
-    "lint": "eslint src --ext .ts",
-    "format": "prettier --write \"src/**/*.ts\"",
-    "wizard": "tsx src/cli/index.ts wizard",
-    "doctor": "tsx src/cli/index.ts doctor",
-    "mcp:scan": "tsx src/cli/index.ts mcp scan",
-    "mcp:install": "tsx src/cli/index.ts mcp install",
-    "media:start": "docker compose up media-gen -d",
-    "media:stop": "docker compose down media-gen",
-    "serve": "tsx src/server/index.ts",
-    "web:dev": "cd web && npm run dev",
-    "web:build": "cd web && npm run build",
-    "web:start": "cd web && npm run start",
-    "dev": "concurrently \"npm run serve\" \"npm run web:dev\"",
-    "setup": "bash scripts/setup_amf.sh"
-  },
-  "keywords": [
-    "ai",
-    "assistant",
-    "computer-use",
-    "mcp",
-    "ollama",
-    "video-generation",
-    "image-generation",
-    "automation",
-    "open-source"
-  ],
-  "author": "AMFbot Project Contributors",
-  "license": "Apache-2.0",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/amfbot/amfbot-suite.git"
-  },
-  "engines": {
-    "node": ">=22.0.0"
+    "start": "bun run src/main.ts",
+    "dev": "bun run --watch src/main.ts",
+    "build": "bun build ./src/main.ts --outfile ./dist/amf-os --compile",
+    "test": "bun test",
+    "lint": "bunx eslint src",
+    "format": "bunx prettier --write src"
   },
   "dependencies": {
-    "@hono/node-server": "^1.19.9",
-    "boxen": "^8.0.1",
+    "zod": "^3.23.8",
     "chalk": "^5.3.0",
-    "commander": "^12.1.0",
-    "concurrently": "^9.2.1",
-    "cors": "^2.8.6",
+    "telegraf": "^4.16.3",
+    "vectordb": "^0.4.0",
+    "ioredis": "^5.4.1",
     "dotenv": "^16.4.5",
     "execa": "^9.5.1",
-    "fs-extra": "^11.3.3",
-    "glob": "^11.0.0",
-    "got": "^14.4.4",
-    "hono": "^4.11.7",
-    "inquirer": "^10.2.2",
-    "ollama": "^0.5.12",
     "ora": "^8.1.1",
-    "systeminformation": "^5.23.5",
-    "tabtab": "^3.0.2",
-    "telegraf": "^4.16.3",
-    "undici": "^7.19.2",
-    "ws": "^8.18.0",
-    "zod": "^3.23.8"
+    "boxen": "^8.0.1",
+    "winston": "^3.13.0"
   },
   "devDependencies": {
-    "@types/fs-extra": "^11.0.4",
-    "@types/inquirer": "^9.0.7",
-    "@types/node": "^22.10.2",
-    "@types/ws": "^8.5.13",
-    "@typescript-eslint/eslint-plugin": "^8.18.0",
-    "@typescript-eslint/parser": "^8.18.0",
-    "eslint": "^9.17.0",
-    "prettier": "^3.4.2",
-    "tsdown": "^0.20.1",
-    "tsx": "^4.19.2",
+    "@types/bun": "latest",
     "typescript": "^5.7.2",
-    "vitest": "^2.1.8"
+    "eslint": "^9.17.0",
+    "prettier": "^3.4.2"
   }
 }
