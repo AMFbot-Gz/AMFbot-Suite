@@ -1,0 +1,24 @@
+name: "🚀 Suggestion de Fonctionnalité"
+description: Proposez une nouvelle idée pour AMF-OS.
+title: "[FEAT] Titre de la fonctionnalité"
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Quel problème cette fonctionnalité résout-elle ?
+      description: Une description claire de ce que vous essayez d'accomplir.
+    validations:
+      required: true
+  - type: textarea
+    id: solution
+    attributes:
+      label: Description de la Solution
+      description: Expliquez comment vous imaginez cette fonctionnalité.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives envisagées
+      description: Y a-t-il d'autres moyens d'arriver au même résultat ?

@@ -1,79 +1,55 @@
-# Contributing to AMFbot Suite
+# Contribuer à AMF-OS Sovereign Elite
 
-Thank you for your interest in contributing to AMFbot! This document provides guidelines and instructions for contributing.
+Merci de votre intérêt pour la construction de l'avenir de l'IA souveraine ! Ce document fournit les directives et instructions pour contribuer au projet.
 
-## Code of Conduct
+## Code de Conduite
+En participant à ce projet, vous acceptez de respecter notre [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md).
 
-By participating in this project, you agree to maintain a respectful and inclusive environment for all contributors.
+## Comment Contribuer
 
-## How to Contribute
-
-### Reporting Issues
-
-1. Check existing issues to avoid duplicates
-2. Use the issue templates when available
-3. Provide detailed reproduction steps
-4. Include system information (OS, Node.js version, hardware)
+### Signaler des Problèmes
+1. Vérifiez les issues existantes pour éviter les doublons.
+2. Utilisez les templates d'issue disponibles (Bug report ou Feature request).
+3. Fournissez des étapes de reproduction détaillées.
+4. Incluez les informations système (OS, version de Bun, matériel).
 
 ### Pull Requests
+1. Forkez le dépôt.
+2. Créez une branche de fonctionnalité : `git checkout -b feat/votre-feature`.
+3. Effectuez vos modifications avec des messages de commit clairs.
+4. Ajoutez des tests pour les nouvelles fonctionnalités.
+5. Assurez-vous que tous les tests passent : `bun test`.
+6. Soumettez votre Pull Request vers la branche `main`.
 
-1. Fork the repository
-2. Create a feature branch: `git checkout -b feature/your-feature`
-3. Make your changes with clear commit messages
-4. Add tests for new functionality
-5. Ensure all tests pass: `npm test`
-6. Submit a pull request
-
-### Commit Messages
-
-Follow conventional commits:
-- `feat:` New feature
-- `fix:` Bug fix
+### Messages de Commit
+Nous suivons les conventions standards :
+- `feat:` Nouvelle fonctionnalité
+- `fix:` Correction de bug
 - `docs:` Documentation
-- `refactor:` Code refactoring
-- `test:` Test additions
+- `refactor:` Refactorisation du code
+- `test:` Ajout de tests
 - `chore:` Maintenance
 
-## Development Setup
+## Setup de Développement (Elite)
 
 ```bash
-# Clone your fork
-git clone https://github.com/your-username/amfbot-suite.git
-cd amfbot-suite
+# Clonez votre fork
+git clone https://github.com/votre-username/AMFbot-Suite.git
+cd AMFbot-Suite
 
-# Install dependencies
-npm install
+# Installez les dépendances avec Bun
+bun install
 
-# Install Python dependencies
-cd modules/media-gen && pip install -e ".[dev]"
+# Lancez en mode développement
+bun dev
 
-# Run in development mode
-npm run dev
-
-# Run tests
-npm test
+# Exécutez les tests
+bun test
 ```
 
-## Code Style
+## Style de Code
+- **TypeScript** : Nous utilisons ESLint et Prettier via Bun.
+- Lancez `bun run format` avant de committer.
 
-- **TypeScript**: We use ESLint and Prettier
-- **Python**: We use Black and Ruff
-- Run `npm run format` before committing
-
-## Adding MCP Servers
-
-To add a new pre-configured MCP server:
-
-1. Create a JSON file in `mcp-hub/servers/`
-2. Add the server to `AVAILABLE_SERVERS` in `mcp-hub/installer.ts`
-3. Document in `docs/mcp-servers.md`
-
-## Testing
-
-- Write unit tests for new features
-- Test on multiple platforms when possible
-- Include integration tests for MCP servers
-
-## License
-
-By contributing, you agree that your contributions will be licensed under the Apache License 2.0.
+## Licence
+En contribuant, vous acceptez que vos contributions soient licenciées sous la Licence Apache 2.0.

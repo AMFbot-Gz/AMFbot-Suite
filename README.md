@@ -1,17 +1,7 @@
 <div align="center">
 
-# 🤖 AMFbot Suite
+<img src="assets/logo.png" alt="AMF-OS Sovereign Logo" width="200">
 
-### The Ultimate Open Source AI That Owns the Keys to Your Computer
-
-[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
-[![Node.js](https://img.shields.io/badge/Node.js-22%2B-green.svg)](https://nodejs.org/)
-[![Python](https://img.shields.io/badge/Python-3.11%2B-blue.svg)](https://python.org/)
-[![Docker](https://img.shields.io/badge/Docker-Ready-blue.svg)](https://docker.com/)
-
-**AMFbot is a sovereign AI assistant that runs entirely on your machine, with full system control, multimedia generation, and infinite extensibility via MCP.**
-
-      
 # 🛸 AMF-OS SOVEREIGN ELITE
 ### Blueprint 2026.1 - The Event-Driven Micro-Kernel for Modern Sovereignty
 
@@ -20,47 +10,46 @@
 [![Security](https://img.shields.io/badge/Security-Zero--Trust-red.svg)](#-security)
 [![Architecture](https://img.shields.io/badge/Arch-Micro--Kernel-magenta.svg)](#-architecture)
 
-**AMF-OS is a hyper-fast, self-healing AI Workstation. It doesn't just chat; it controls, fixes, and evolves entirely offline.**
+**AMF-OS est une station de travail IA ultra-rapide, autonome et souveraine.**
+*Elle ne se contente pas de discuter : elle agit, s'auto-répare et évolue entièrement sur votre matériel.*
 
-[Démarrage Rapide](#-quick-start) • [Guide d'Installation (FR)](INSTALL_FR.md) • [Architecture](#-architecture) • [Sovereign Features](#-features)
+[Démarrage Rapide](#-démarrage-rapide) • [Guide d'Installation (FR)](INSTALL_FR.md) • [Architecture](#-architecture-blueprint-20261) • [Fonctionnalités](#-capacités-élites)
 
 </div>
 
 ---
 
-## 🚀 Quick Start (Fast-Track)
+## ⚡ Démarrage Rapide (One-Click)
+
+Destiné au "commun des mortels", cet installateur s'occupe de tout : détection de votre matériel (GPU NVIDIA/Mac M1-M3), installation de Bun, Docker et synchronisation des modèles.
 
 ```bash
-# Clone & Enter the Matrix
+# Clonez et entrez dans la matrice
 git clone https://github.com/AMFbot-Gz/AMFbot-Suite.git && cd AMFbot-Suite
 
-# Elite Bootstrap (Hardware-Aware)
+# Lancez l'installation automatique (Hardware-Aware)
 bash setup/install.sh
 
-# Ignite the Kernel
+# Démarrez le Kernel
 bun start
 ```
 
 ---
 
-## ✨ features / capacités élites
+## ✨ Capacités Élites
 
-### 🌀 Le Micro-Kernel Événementiel
-- **Latence Zéro** : <150ms TTFT grâce au bus de données SSE natif de Bun.
-- **Speculative Decoding** : Une pré-génératon ultra-rapide (qwen3:0.5b) validée en temps réel par le modèle maître (llama4:8b).
-- **Swarm Intelligence** : Utilisation de workers parallèles pour la surveillance et l'exécution.
+### 🌀 Micro-Kernel Événementiel
+- **Inférence Ultra-Rapide** : Latence <150ms via le bus SSE natif de Bun.
+- **Speculative Decoding** : Pré-génération par `qwen3:0.5b` validée instantanément par `llama4:8b`.
+- **Swarm Intelligence** : Utilisation de workers parallèles pour la surveillance et l'exécution synchrone.
 
 ### 🩹 Auto-Réparation (Self-Healing)
-- **Boucle ReAct** : Diagnostique automatiquement les erreurs shell, génère un patch via `qwen3:coder` et ré-exécute.
-- **Rollback Atomique** : Utilise Git pour revenir instantanément à un état stable en cas de "Kernel Panic" logique.
+- **Boucle ReAct Autonome** : Analyse les erreurs système, génère un correctif et ré-exécute sans intervention humaine.
+- **Rollback Atomique** : En cas de défaillance critique, le système revient instantanément à son dernier état stable via Git snapshots.
 
 ### 🧠 Mémoire Souveraine (Local RAG)
-- **LanceDB Enterprise** : Stockage vectoriel local haute performance pour apprendre de vos sessions.
-- **Knowledge Base Tactique** : Mémorise les séquences de commandes réussies pour optimiser les futures interventions.
-
-### 🛡️ Sécurité de Niveau Militaire
-- **Air-Gapped Ready** : Conçu pour fonctionner sans aucune connexion Internet.
-- **Sentinel Audit** : Surveillance proactive des accès et journalisation JSON structurée.
+- **LanceDB Enterprise** : Stockage vectoriel local haute performance.
+- **Apprentissage Adaptatif** : Mémorise vos workflows et préférences pour devenir plus efficace à chaque session.
 
 ---
 
@@ -79,26 +68,33 @@ graph TD
 
 ---
 
-## 📦 Stack Technique "Elite-Only"
+## 📦 Stack Technique "Sovereign"
 
 | Couche | Technologie | Rôle |
 |-----------|------------|------|
 | **Runtime** | Bun | Latence zéro, Workers natifs |
-| **Logic** | llama4:8b | Raisonnement complexe |
-| **Coding** | qwen3:coder | Génération & Patching |
+| **Logic** | llama4:8b | Raisonnement complexe & Consensus |
+| **Coding** | qwen3:coder | Génération & Patching de code |
 | **Cache** | KeyDB | Hot-cache d'état ultra-rapide |
 | **Memory** | LanceDB | Base de données vectorielle locale |
 
 ---
 
-## 🤝 Contribution
-Rejoignez l'élite. AMF-OS est une plateforme souveraine. Voir [CONTRIBUTING.md](CONTRIBUTING.md).
+## 🛡️ Sécurité & Confidentialité
+- **100% Hors-ligne** : Vos données et vos modèles ne quittent jamais votre machine.
+- **Sentinel Audit** : Surveillance proactive et logs d'audit JSON pour une transparence totale.
+- **Sandbox Isolé** : Exécution sécurisée des commandes système via VM/Firecracker.
+
+---
+
+## 🤝 Contribuer
+Rejoignez l'élite. AMF-OS est une plateforme communautaire ouverte. Consultez [CONTRIBUTING.md](CONTRIBUTING.md) pour nous aider à bâtir le futur de l'IA souveraine.
 
 ---
 
 <div align="center">
 
-**Dominons la machine. Soyons souverains.**
-[⭐ Star us on GitHub](https://github.com/amfbot/amfbot-suite)
+**Maîtrisez votre machine. Soyez souverain.**
+[⭐ Star us on GitHub](https://github.com/AMFbot-Gz/AMFbot-Suite)
 
 </div>

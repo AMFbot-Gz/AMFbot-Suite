@@ -1,53 +1,42 @@
-# Security Policy
+# Politique de Sécurité : AMF-OS Sovereign
 
-## Supported Versions
+## Versions Supportées
 
-| Version | Supported          |
+| Version | Supportée           |
 | ------- | ------------------ |
-| 1.x.x   | :white_check_mark: |
+| 2.x.x   | :white_check_mark: |
+| 1.x.x   | :warning:          |
 | < 1.0   | :x:                |
 
-## Reporting a Vulnerability
+## Signaler une Vulnérabilité
 
-If you discover a security vulnerability, please report it responsibly:
+Si vous découvrez une faille de sécurité, merci de la signaler de manière responsable :
 
-1. **Do NOT** open a public issue
-2. Email security concerns to: security@amfbot.dev
-3. Include:
-   - Description of the vulnerability
-   - Steps to reproduce
-   - Potential impact
-   - Suggested fix (if any)
+1. **NE PAS** ouvrir une issue publique.
+2. Envoyez les détails de la vulnérabilité via un canal privé ou sécurisé (email contact@amfbot.dev - exemple).
+3. Incluez :
+   - Description de la faille.
+   - Étapes de reproduction.
+   - Impact potentiel.
+   - Correctif suggéré (si possible).
 
-We will respond within 48 hours and work with you to resolve the issue.
+## Modèle de Sécurité Sovereign
 
-## Security Model
+### Accès Système Privilégié
+Le module d'accès d'AMF-OS est conçu avec la sécurité comme priorité absolue :
+- **Confirmation Explicite** : Toutes les commandes sudo nécessitent une confirmation utilisateur.
+- **Audit Logging** : Chaque action privilégiée est enregistrée dans `~/.amf-os/audit.json`.
+- **Zéro Persistance** : Les identifiants root ne sont jamais stockés en mémoire.
 
-### Root Access Module
+### Isolation & Sandboxing
+- **Firecracker VMM** : L'exécution des instructions complexes se fait dans un environnement isolé (sandbox).
+- **Isolation Réseau** : Les conteneurs Docker tournent sur des réseaux isolés sans accès externe par défaut.
 
-AMFbot's Root Access module is designed with security as a priority:
+### Confidentialité Absolue
+- **Traitement Local** : Toute l'intelligence artificielle est traitée localement.
+- **Zéro Télémétrie** : Aucune donnée analytique ou de diagnostic n'est collectée.
 
-- **Explicit Confirmation**: All sudo commands require user confirmation
-- **Session Timeouts**: Root sessions expire after 5 minutes
-- **Audit Logging**: Every privileged action is logged to `~/.amfbot/audit.log`
-- **No Persistence**: Root credentials are never stored
-
-### Network Isolation
-
-- Docker containers run in isolated networks
-- External API access is opt-in only
-- MCP servers have configurable access scopes
-
-### Data Privacy
-
-- All AI processing happens locally by default
-- No telemetry or analytics are collected
-- Model weights are downloaded directly from official sources
-- User data never leaves your machine
-
-## Best Practices
-
-1. Run AMFbot in a dedicated user account when possible
-2. Review audit logs regularly: `cat ~/.amfbot/audit.log`
-3. Use environment variables for API keys, never commit them
-4. Keep the software updated for security patches
+## Bonnes Pratiques
+1. Exécutez AMF-OS sous un utilisateur dédié si possible.
+2. Vérifiez régulièrement les logs d'audit : `cat ~/.amf-os/audit.json`.
+3. Utilisez des variables d'environnement pour vos tokens (Telegram, etc.).
