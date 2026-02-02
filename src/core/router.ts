@@ -1,4 +1,4 @@
-export type ModelType = "thinking" | "coding" | "speed";
+export type ModelType = "thinking" | "coding" | "speed" | "elite";
 
 export interface ModelRouting {
     model: string;
@@ -10,6 +10,7 @@ export class ModelRouter {
         thinking: "llama4:8b",
         coding: "qwen3:coder",
         speed: "qwen3:0.5b",
+        elite: "kimi-k2.5"
     };
 
     /**
@@ -24,6 +25,10 @@ export class ModelRouter {
         }
 
         if (isComplex) {
+            // Use Kimi if explicitly complex reasoning or elite task
+            if (prompt.includes("architect") || prompt.includes("reason")) {
+                return { model: this.routes.elite, temperature: 0.6 };
+            }
             return { model: this.routes.thinking, temperature: 0.7 };
         }
 

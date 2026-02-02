@@ -1,97 +1,62 @@
 <div align="center">
 
-<img src="assets/logo.png" alt="AMF-OS Sovereign Logo" width="200">
+<img src="web/assets/logo-dragon.png" alt="AMFbot Sovereign Dragon" width="200">
 
-# 🛸 AMF-OS SOVEREIGN ELITE
-### Blueprint 2026.1 - The Event-Driven Micro-Kernel for Modern Sovereignty
+# 🛸 AMFbot SOVEREIGN ELITE
+### Blueprint 2026.1 - "The Elite Era" (v2.6.0)
+**Infrastructure d'IA Souveraine, Multi-Plateforme & Ultra-Accessible**
 
-[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
-[![Runtime](https://img.shields.io/badge/Runtime-Bun-fastactive.svg)](https://bun.sh/)
-[![Security](https://img.shields.io/badge/Security-Zero--Trust-red.svg)](#-security)
-[![Tests](https://img.shields.io/github/actions/workflow/status/AMFbot-Gz/AMFbot-Suite/ci.yml?label=tests)](https://github.com/AMFbot-Gz/AMFbot-Suite/actions)
-[![Version](https://img.shields.io/badge/Version-v2026.1.1-magenta.svg)](#-versions--compatibilité)
+[![Security](https://img.shields.io/badge/Security-Zero--Trust-red.svg)](#-sécurité-élite)
+[![Platform](https://img.shields.io/badge/Platform-Windows%20%7C%20macOS%20%7C%20Linux-blue.svg)](#-compatibilité-windows-native)
+[![Privacy](https://img.shields.io/badge/Privacy-Zero%20Data%20Leakage-magenta.svg)](#-notre-manifeste)
 
-**AMF-OS est une station de travail IA ultra-rapide, autonome et souveraine.**
-*Elle ne se contente pas de discuter : elle agit, s'auto-répare et évolue entièrement sur votre matériel.*
+**AMFbot v2.6 marque le passage du projet GitHub à une infrastructure de calibre industriel.**
+*Libérez-vous du cloud. Prenez le contrôle total avec le Dragon's Kernel.*
 
-[Démarrage Rapide](#-démarrage-rapide) • [Guide d'Installation (FR)](INSTALL_FR.md) • [Architecture](#-architecture-blueprint-20261) • [Pour les Développeurs](#-pour-les-développeurs)
+[Démarrage Elite](#-le-setup-elite-en-un-clic) • [Guide Connecteurs](docs/connectors.md) • [Architecture Elite](docs/ARCHITECTURE.md) • [Sécurité](docs/security-deep-dive.md)
 
 </div>
 
 ---
 
-## 🎯 Pour qui ?
-*   **🧑‍💻 Devs Solo** : Automatisez votre workflow local sans quitter votre terminal.
-*   **🛡️ Ops/SysAdmin** : Gérez vos serveurs via une interface souveraine sécurisée.
-*   **🧪 Labs IA On-Prem** : Déployez une pile IA complète et privée en quelques secondes.
+## 🐲 L'Identité Elite
+AMFbot n'est plus seulement un bot, c'est une **marque de confiance**. Unifiée à travers toutes ses interfaces (CLI, Web, Telegram), elle repose sur trois piliers indéboulonnables :
+1.  **Souveraineté Totale** : Vos clés, vos données, votre matériel.
+2.  **Accessibilité Industrielle** : Prêt pour Windows, Linux et macOS dès la sortie de boîte.
+3.  **Puissance Agentique** : Une boucle ReAct optimisée avec le support de modèles de pointe comme **Kimi k2.5**.
 
 ---
 
-## 📋 Prérequis Minimaux
-| Composant | Recommandé (Performance Elite) | Minimum (Mode Efficacité) |
-|-----------|-------------------------------|---------------------------|
-| **OS**    | macOS 14+ / Ubuntu 22.04      | macOS 13+ / Debian 11     |
-| **RAM**   | 32 Go (Unified/DDR5)          | 16 Go                     |
-| **GPU**   | NVIDIA 12Go VRAM / Apple M2+  | CPU-Only compatible       |
-| **Espace**| 100 Go SSD (Modèles LLM)      | 40 Go                     |
-
----
-
-## ⚡ Démarrage Rapide
-
-### Option A : Installation Directe (Recommandé)
-L'installateur intelligent détecte votre GPU et optimise les modèles automatiquement.
+## 🚀 Le Setup Elite en Un Clic
+L'installateur intelligent s'occupe de tout : hardening de sécurité, détection GPU et configuration MCP.
 
 ```bash
-# Clonez et entrez dans la matrice
-git clone https://github.com/AMFbot-Gz/AMFbot-Suite.git && cd AMFbot-Suite
-
-# Lancez l'installation automatique
-bash setup/install.sh
-
-# Démarrez le Kernel
-bun start
+# Invoquez le Dragon instantanément
+curl -fsSL https://amf-elite.sh/install.sh | bash
 ```
-
-## Option B : 100% Docker (Isolation Totale)
-Pour ceux qui préfèrent ne rien installer sur l'hôte, utilisez le mode conteneurisé.
-
-```bash
-docker-compose up -d --build
-```
-*Note : Assurez-vous d'avoir configuré votre `.env` au préalable.*
 
 ---
 
-## ✨ Capacités d'Élite (v2.4)
-
-### 🌀 Moteur de Skills Modulaire
-AMF-OS utilise désormais un standard de **Skills dynamiques** (format `.md` + YAML) inspiré des meilleurs frameworks agentiques.
-- **Départements** : Ops & Sécurité, Ingénierie Senior, Studio Créatif, Autonomie Loki.
-- **Browser Control [NEW]** : L'agent peut désormais naviguer sur le web, extraire des données et interagir avec les interfaces web en toute autonomie.
-- **Chargement Dynamique** : Le Kernel charge uniquement les compétences nécessaires à la tâche.
-
-### 🧠 Raisonnement Agentique (ReAct + Reflection)
-L'IA ne se contente plus de répondre ; elle réfléchit et apprend de ses actions :
-- **Boucle ReAct** : Cycle `Thought > Action > Observation` pour une précision chirurgicale.
-- **Hook Reflection** : Après chaque tâche, l'agent produit une auto-critique enregistrée dans la mémoire tactique (LanceDB), simulant une amélioration continue.
-
-### 🛡️ Tool Registry & Sécurité
-- **Permissions granulaires** : Chaque outil (shell, fs, network) possède un niveau d'accréditation (User, Admin, Root).
-- **Hardening natif** : Documentation technique de la sandbox (VM/Firecracker) et guide de durcissement.
+## 🛡️ Sécurité Élite : Zero Data Leakage
+La version 2.6 introduit des mesures de sécurité de grade militaire :
+*   **Protection LFI Native** : Un validateur de chemin surveille chaque accès fichier pour prévenir les fuites de données locales.
+*   **Audit Logger Normalisé** : Chaque action agentique est tracée dans un log JSON exploitable par des outils tiers (SIEM).
+*   **Privilèges Restreints** : Le mode Superuser est désormais encadré par des frontières de sécurité strictes.
 
 ---
 
-## 🎬 Scénarios d'Usage
+## 🪟 Compatibilité Windows Native
+AMFbot Elite supporte désormais officiellement Windows.
+*   **Chemins Normalisés** : Gestion transparente des séparateurs de dossiers et des profils utilisateurs.
+*   **CLI Autopick** : Détection automatique de PowerShell ou Bash pour une expérience sans friction.
 
-### 📁 RAG Local Instantané
-> "Analyse mon dossier `/src/kernel` et explique-moi comment la gestion de la mémoire est isolée."
+---
 
-### 🔧 Contrôle Système Autonome
-> "Vérifie les logs nginx, identifie les IPs agressives et bloque-les via iptables après confirmation."
-
-### 🎨 Génération Multimédia
-> "Crée une image de couverture pour ma doc au format 16:9 style cyber-minimalist noir et magenta."
+## 🔌 Ubiquité & Connectivité Elite
+Ne soyez plus jamais déconnecté de votre intelligence souveraine.
+*   **Telegram Sync** : Synchronisation en temps réel de vos sessions entre votre machine et votre mobile.
+*   **MCP Auto-Discovery** : AMFbot scanne et connecte automatiquement vos serveurs Model Context Protocol locaux.
+*   **Modèles Synthétiques** : Routage intelligent vers Kimi k2.5 pour les tâches d'architecture complexes.
 
 ---
 
@@ -99,43 +64,34 @@ L'IA ne se contente plus de répondre ; elle réfléchit et apprend de ses actio
 
 ```mermaid
 graph TD
-    User["Instruction Admin"] --> Bridge["Telegram Elite Bridge"]
-    Bridge --> Kernel["Kernel (Bun.Worker)"]
-    Kernel --> Orch["Orchestrator (Logic 11-Step)"]
-    Orch --> ToT["Tree-of-Thought Reasoning"]
-    Orch --> Exec["Sandbox Execution"]
-    Exec --> Healing["Auto-Patch & Rollback"]
-    Kernel --> Sentinel["Auditeur Sentinel"]
+    User((Utilisateur)) --> CLI[Elite CLI]
+    User --> Web[Web UI Glass]
+    User --> TG[Telegram Elite]
+    
+    subgraph "Sovereign Kernel (v2.6)"
+        SK[Dragon's Kernel]
+        AV[Audit & Validator]
+        MM[Tactical Memory]
+    end
+    
+    CLI & Web & TG --> SK
+    SK --> AV
+    AV --> MM
+    SK --> LLM[Local LLM: Kimi/Llama/Qwen]
+    SK --> MCP[MCP Hub: Plugins Autonomes]
 ```
 
 ---
 
-## �️ Pour les Développeurs
-
-### Arborescence
-*   `src/kernel/` : Le cœur réactif. Gère l'événementiel et les workers parallèles.
-*   `src/core/` : L'orchestrateur logique, le routage des modèles et la spéculation.
-*   `src/autonomy/` : Moteurs de self-healing, sandbox (Firecracker) et régénération.
-*   `src/memory/` : Gestion LanceDB et stockage des patterns de succès.
-*   `src/adapters/` : Connecteurs externes (Telegram, Ollama, Media-Gen).
-
-### Mode Contribution
-Consultez le guide [CONTRIBUTING.md](CONTRIBUTING.md) pour configurer votre environnement de test.
+## 🎬 Scénarios d'Usage Elite
+> **Ops** : "Vérifie la santé de mon cluster et bloque les IPs suspectes via la passerelle Telegram."
+> **Dev** : "Génère un boilerplate NestJS avec auth JWT et valide-le dans une sandbox isolée."
+> **Data** : "Scrape les actus sur l'IA souveraine et stocke une synthèse vectorielle dans ma Tactical Memory."
 
 ---
 
-## 📈 Versions & Compatibilité
-
-| Tag | Date | Évolutions Clés | CPU/GPU Focus |
-|-----|------|-----------------|---------------|
-| **v2026.1.1** | Fév 2026 | Refonte UX + Installateur Robuste | Hybrid (Metal/NVIDIA) |
-| **v2026.1.0** | Jan 2026 | Initial Sovereign Blueprint | Multi-Node focus |
-
----
-
+<footer>
 <div align="center">
-
-**Maîtrisez votre machine. Soyons souverains.**
-[⭐ Star us on GitHub](https://github.com/AMFbot-Gz/AMFbot-Suite)
-
+Built for the event-driven future. AMFbot-Suite is an open infrastructure for sovereign intelligence.
 </div>
+</footer>

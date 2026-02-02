@@ -1,4 +1,5 @@
 import { EventEmitter } from "events";
+import { HeartbeatService } from "./heartbeat.js";
 import chalk from "chalk";
 
 /**
@@ -7,6 +8,7 @@ import chalk from "chalk";
  */
 export class SovereignKernel extends EventEmitter {
     private workers: Map<string, any> = new Map();
+    private heartbeat = new HeartbeatService();
     private isRunning = false;
 
     constructor() {
@@ -23,6 +25,9 @@ export class SovereignKernel extends EventEmitter {
 
         // Spawn core monitoring/sentinel worker
         this.spawnWorker("sentinel", "./src/sentinel/worker.ts");
+
+        // Start Multi-node Heartbeat
+        await this.heartbeat.start();
 
         this.emit("kernel-ready");
         console.log(chalk.green("🌀 KERNEL: Swarm synchronized."));

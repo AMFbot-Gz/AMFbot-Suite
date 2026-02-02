@@ -1,5 +1,7 @@
 import { OllamaAdapter } from "../adapters/ollama.js";
 import { SkillManager } from "./skills.js";
+import { PathValidator } from "../security/validator.js";
+import { AuditLogger } from "../audit/logger.js";
 import chalk from "chalk";
 
 /**
@@ -67,6 +69,33 @@ Rules: Use the pattern Thought -> Action -> Observation. Output Thought: followe
 
     private async executeAction(action: string): Promise<string> {
         console.log(chalk.dim(`🛠️  ORCHESTRATOR: Executing action: \${action}`));
+
+        // 1. LFI Protection: Check for paths in the action string
+        // Simple heuristic: look for things that look like paths
+        const pathMatches = action.match(/([\/~][\w\/\.\-]+)/g) || [];
+        for (const p of pathMatches) {
+            const validation = PathValidator.validate(p);
+            if (!validation.safe) {
+                await AuditLogger.log({
+                    level: "CRITICAL",
+                    action: "LFI_PREVENTED",
+                    performer: "ORCHESTRATOR",
+                    details: { action, offendingPath: p, error: validation.error },
+                    status: "FAILURE"
+                });
+                return `❌ ERROR: Security Violation. \${validation.error}`;
+            }
+        }
+
+        // 2. Audit Log Execution
+        await AuditLogger.log({
+            level: "INFO",
+            action: "ACTION_EXECUTED",
+            performer: "ORCHESTRATOR",
+            details: { action },
+            status: "SUCCESS"
+        });
+
         return "Task processed successfully in Sovereign Sandbox.";
     }
 

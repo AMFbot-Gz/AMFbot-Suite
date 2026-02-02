@@ -2,6 +2,7 @@ import { EventEmitter } from "events";
 import { SovereignKernel } from "../kernel/index.js";
 import { SovereignOrchestrator } from "./orchestrator.js";
 import { HardwareDetector, HardwareCapabilities } from "./hardware-detector.js";
+import { AuditLogger } from "../audit/logger.js";
 import chalk from "chalk";
 
 /**
@@ -65,6 +66,16 @@ export class AMFAgent extends EventEmitter {
      */
     async *chat(sessionId: string, input: string): AsyncGenerator<string> {
         console.log(chalk.dim(`📡 AGENT: Session [\${sessionId}] Instruction: "\${input.slice(0, 50)}..."`));
+
+        // Audit Log Request
+        await AuditLogger.log({
+            level: "INFO",
+            action: "AGENT_INSTRUCTION_RECEIVED",
+            performer: "USER",
+            details: { sessionId, inputSnippet: input.slice(0, 100) },
+            status: "SUCCESS"
+        });
+
         yield* this.orchestrator.runSovereignLoop(input);
     }
 

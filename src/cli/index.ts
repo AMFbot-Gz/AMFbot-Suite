@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * 🛸 AMF-OS SOVEREIGN ELITE - COMMAND LINE INTERFACE
- * Version 2.5.4 - "The Sovereign Commander"
+ * Version 2.6.0 - "The Elite Era"
  */
 
 import { Command } from "commander";
@@ -11,7 +11,7 @@ import boxen from "boxen";
 import { Agent as SovereignAgent } from "../core/agent.js";
 import { env } from "../config/env.js";
 
-const VERSION = "2.5.4";
+const VERSION = "2.6.0";
 
 const BANNER = `
    🛸 AMF-OS SOVEREIGN ELITE
@@ -42,7 +42,8 @@ program
         try {
             const agent = new SovereignAgent();
 
-            agent.on("hardware-detected", (caps) => {
+            // Explicitly handle events
+            agent.on("hardware-detected", (caps: any) => {
                 spinner.text = `Hardware Synchronized: \${caps.cpu.brand}`;
             });
 
@@ -134,6 +135,45 @@ program
             });
         } catch (e) {
             spinner.fail(`Ollama Offline: \${e instanceof Error ? e.message : "Service unreachable"}.`);
+        }
+    });
+
+/**
+ * COMPLETION - Shell Autocompletion
+ */
+program
+    .command("completion <shell>")
+    .description("Generate shell completion script (zsh, bash, fish)")
+    .action((shell) => {
+        const scripts: Record<string, string> = {
+            zsh: `# compdef amfbot
+_amfbot_completion() {
+  local -a commands
+  commands=(
+    'start:Launch the Sovereign Elite Micro-Kernel'
+    'doctor:Diagnose Sovereign OS health'
+    'status:Check system resources and model status'
+    'completion:Generate shell completion script'
+  )
+  _describe 'command' commands
+}
+compdef _amfbot_completion amfbot`,
+            bash: `_amfbot_completion() {
+  COMPREPLY=($(compgen -W "start doctor status completion" -- "\${COMP_WORDS[COMP_CWORD]}"))
+}
+complete -F _amfbot_completion amfbot`,
+            fish: `complete -c amfbot -f
+complete -c amfbot -n "__fish_use_subcommand" -a "start" -d "Launch the Sovereign Elite Micro-Kernel"
+complete -c amfbot -n "__fish_use_subcommand" -a "doctor" -d "Diagnose Sovereign OS health"
+complete -c amfbot -n "__fish_use_subcommand" -a "status" -d "Check system resources and model status"
+complete -c amfbot -n "__fish_use_subcommand" -a "completion" -d "Generate shell completion script"`
+        };
+
+        const script = scripts[shell.toLowerCase()];
+        if (script) {
+            process.stdout.write(script + "\n");
+        } else {
+            console.error(chalk.red(`❌ Unsupported shell: \${shell}. Supported: zsh, bash, fish`));
         }
     });
 
