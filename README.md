@@ -68,6 +68,7 @@ docker-compose up -d --build
 ### 🌀 Moteur de Skills Modulaire
 AMF-OS utilise désormais un standard de **Skills dynamiques** (format `.md` + YAML) inspiré des meilleurs frameworks agentiques.
 - **Départements** : Ops & Sécurité, Ingénierie Senior, Studio Créatif, Autonomie Loki.
+- **Browser Control [NEW]** : L'agent peut désormais naviguer sur le web, extraire des données et interagir avec les interfaces web en toute autonomie.
 - **Chargement Dynamique** : Le Kernel charge uniquement les compétences nécessaires à la tâche.
 
 ### 🧠 Raisonnement Agentique (ReAct + Reflection)

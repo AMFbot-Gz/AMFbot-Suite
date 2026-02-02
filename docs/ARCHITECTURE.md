@@ -34,3 +34,9 @@ Contrairement aux agents classiques, AMF-OS apprend de ses succès.
 L'exécution n'est jamais directe sur l'hôte en mode "Production".
 *   **Virtualisation** : Préparation pour l'intégration Firecracker VMM pour une isolation totale par micro-VM (WIP).
 *   **Restiction** : Utilisation de `chroot` et de namespaces Linux pour limiter la visibilité du système de fichiers.
+
+## 🧩 Elite Skill Pack & Browser Control
+L'AMF-OS v2.5.4 intègre désormais le contrôle natif du navigateur et un pack de compétences d'élite :
+- **Browser Control** : Navigation, scraping et automatisation web local-first.
+- **Persistent Memory** : Apprentissage continu via Tactical Memory.
+- **Sovereign Connectors** : Ponts sécurisés vers Telegram et les interfaces web personnalisées.

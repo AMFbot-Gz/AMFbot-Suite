@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AMF-OS Sovereign Elite | L'IA qui possède les clés</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-deep: #05050a;
+            --bg-card: #0d0d1a;
+            --accent-magenta: #ff00ff;
+            --accent-cyan: #00ffff;
+            --text-primary: #ffffff;
+            --text-secondary: #b0b0cc;
+            --gradient: linear-gradient(135deg, var(--accent-magenta), var(--accent-cyan));
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-deep);
+            color: var(--text-primary);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* Particles/Stars Background */
+        #stars-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: radial-gradient(circle at center, #1a1a3a 0%, #05050a 100%);
+        }
+
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            opacity: 0.3;
+            animation: twinkle var(--duration) infinite ease-in-out;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(1.2); }
+        }
+
+        header {
+            padding: 2rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: absolute;
+            width: 100%;
+            z-index: 10;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 0 10%;
+            position: relative;
+        }
+
+        .hero-img {
+            width: 500px;
+            max-width: 90%;
+            filter: drop-shadow(0 0 50px rgba(255, 0, 255, 0.3));
+            animation: float 6s infinite ease-in-out;
+            margin-bottom: 2rem;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        h1 {
+            font-size: 4.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(to bottom, #fff 0%, #aaa 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .tagline {
+            font-size: 1.5rem;
+            color: var(--text-secondary);
+            max-width: 800px;
+            margin-bottom: 3rem;
+            font-weight: 300;
+        }
+
+        .cta-btn {
+            background: var(--gradient);
+            color: white;
+            padding: 1rem 2.5rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.1rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 10px 30px rgba(255, 0, 255, 0.2);
+        }
+
+        .cta-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 15px 40px rgba(255, 0, 255, 0.4);
+        }
+
+        .section {
+            padding: 5rem 10%;
+        }
+
+        .section-title {
+            font-size: 3rem;
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .card {
+            background-color: var(--bg-card);
+            padding: 2.5rem;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: border-color 0.3s ease, transform 0.3s ease;
+            cursor: default;
+        }
+
+        .card:hover {
+            border-color: var(--accent-magenta);
+            transform: translateY(-10px);
+        }
+
+        .card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--accent-cyan);
+        }
+
+        .card p {
+            color: var(--text-secondary);
+        }
+
+        .terminal {
+            background: #000;
+            border-radius: 10px;
+            padding: 2rem;
+            margin-top: 4rem;
+            width: 100%;
+            max-width: 700px;
+            border: 1px solid #333;
+            font-family: 'JetBrains Mono', monospace;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .terminal::before {
+            content: "•••";
+            position: absolute;
+            top: 10px;
+            left: 15px;
+            color: #444;
+            font-size: 1.2rem;
+            letter-spacing: 5px;
+        }
+
+        .terminal-text {
+            color: var(--accent-cyan);
+            margin-top: 1.5rem;
+            font-size: 0.9rem;
+        }
+
+        .copy-line {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #111;
+            padding: 0.8rem 1.2rem;
+            border-radius: 5px;
+            margin-top: 1rem;
+        }
+
+        .copy-line code {
+            color: #fff;
+        }
+
+        .copy-btn {
+            color: #666;
+            text-decoration: none;
+            font-size: 0.8rem;
+            cursor: pointer;
+        }
+
+        footer {
+            padding: 4rem 10%;
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        @media (max-width: 768px) {
+            h1 { font-size: 3rem; }
+            .section-title { font-size: 2rem; }
+        }
+    </style>
+</head>
+<body>
+    <div id="stars-container"></div>
+
+    <header>
+        <div class="logo">AMF-OS SOVEREIGN ELITE</div>
+        <nav>
+            <a href="https://github.com/wiaamhadara/AMFbot-Suite" style="color: white; text-decoration: none; font-weight: 700;">GitHub</a>
+        </nav>
+    </header>
+
+    <div class="hero">
+        <img src="assets/hero.png" alt="Sovereign AI" class="hero-img">
+        <h1>L'IA qui possède les clés.</h1>
+        <p class="tagline">AMF-OS Sovereign Elite est le premier système d'exploitation agentique conçu pour l'autonomie totale. 100% Local, Privé et Omniprésent.</p>
+        <a href="#install" class="cta-btn">Devenir Souverain</a>
+
+        <div class="terminal" id="install">
+            <div class="terminal-text"># Quick Install (Universal Bootstrapper)</div>
+            <div class="copy-line">
+                <code>curl -fsSL https://amf-elite.sh/install.sh | bash</code>
+                <span class="copy-btn">COPIER</span>
+            </div>
+        </div>
+    </div>
+
+    <section class="section">
+        <h2 class="section-title">Pourquoi AMF-OS ?</h2>
+        <div class="grid">
+            <div class="card">
+                <h3>Persistent Memory</h3>
+                <p>Grâce à la Mémoire Tactique (Tactical Memory), votre agent se souvient de chaque session, projet et préférence. Pas de perte de contexte, jamais.</p>
+            </div>
+            <div class="card">
+                <h3>Browser Control</h3>
+                <p>L'agent peut naviguer sur le web, extraire des données et remplir des formulaires. Un véritable assistant qui agit à votre place.</p>
+            </div>
+            <div class="card">
+                <h3>Zero-Trust Sandbox</h3>
+                <p>Toutes les commandes shell et scripts sont exécutés dans un environnement isolé hautement sécurisé pour protéger votre système maître.</p>
+            </div>
+            <div class="card">
+                <h3>Ubiquité Totale</h3>
+                <p>Accédez à votre intelligence souveraine partout : CLI, Telegram, WhatsApp et Interface Web. Le contrôle est toujours dans votre poche.</p>
+            </div>
+            <div class="card">
+                <h3>Self-Healing Loop</h3>
+                <p>Équipé de la boucle ReAct, l'agent réfléchit, agit, observe et se corrige automatiquement jusqu'à l'accomplissement de la mission.</p>
+            </div>
+            <div class="card">
+                <h3>100% Offline Power</h3>
+                <p>Fonctionne intégralement sur votre propre matériel. Aucune donnée ne quitte votre souveraineté. L'IA la plus privée au monde.</p>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p>© 2026 AMF-OS SOVEREIGN ELITE - Build for the Event-Driven Future.</p>
+    </footer>
+
+    <script>
+        // Star generator
+        const container = document.getElementById('stars-container');
+        for (let i = 0; i < 150; i++) {
+            const star = document.createElement('div');
+            star.className = 'star';
+            const size = Math.random() * 3 + 'px';
+            star.style.width = size;
+            star.style.height = size;
+            star.style.left = Math.random() * 100 + '%';
+            star.style.top = Math.random() * 100 + '%';
+            star.style.setProperty('--duration', (Math.random() * 3 + 2) + 's');
+            container.appendChild(star);
+        }
+    </script>
+</body>
+</html>

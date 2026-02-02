@@ -1,5 +1,4 @@
 import { EventEmitter } from "events";
-import { env } from "../config/env.js";
 import chalk from "chalk";
 
 /**
@@ -36,17 +35,25 @@ export class SovereignKernel extends EventEmitter {
         this.emit("task-dispatched", { taskId, payload });
     }
 
+    /**
+     * Check if kernel is running
+     */
+    status() {
+        return this.isRunning;
+    }
+
     private spawnWorker(id: string, path: string) {
         try {
             // Bun.Worker supports both string paths and URLs
-            const worker = new Worker(new URL("../../" + path, import.meta.url).href);
+            // Use 'any' to avoid type conflict if environment differs
+            const worker = new (globalThis as any).Worker(new URL("../../" + path, import.meta.url).href);
             this.workers.set(id, worker);
 
-            worker.addEventListener("message", (event) => {
+            worker.addEventListener("message", (event: any) => {
                 this.emit(`worker-msg:\${id}`, event.data);
             });
 
-            worker.addEventListener("error", (err) => {
+            worker.addEventListener("error", (err: any) => {
                 console.error(chalk.red(`🔥 KERNEL: Worker [\${id}] Failure:`), err);
                 this.emit("kernel-panic", { id, error: err });
             });

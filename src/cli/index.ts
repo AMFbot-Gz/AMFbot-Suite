@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * 🛸 AMF-OS SOVEREIGN ELITE - COMMAND LINE INTERFACE
- * Version 2.5.3 - "The Sovereign Commander"
+ * Version 2.5.4 - "The Sovereign Commander"
  */
 
 import { Command } from "commander";
@@ -11,7 +11,7 @@ import boxen from "boxen";
 import { Agent as SovereignAgent } from "../core/agent.js";
 import { env } from "../config/env.js";
 
-const VERSION = "2.5.3";
+const VERSION = "2.5.4";
 
 const BANNER = `
    🛸 AMF-OS SOVEREIGN ELITE
@@ -125,11 +125,11 @@ program
             const response = await fetch(`\${ollamaHost}/api/tags`);
             if (!response.ok) throw new Error("Ollama connection failed");
 
-            const data = await response.json() as { models: Array<{ name: string, size: number }> };
+            const result = await response.json() as { models: Array<{ name: string, size: number }> };
             spinner.succeed("Ollama Online.");
 
             console.log(chalk.bold("\n📦 Available Models:"));
-            data.models.forEach((model) => {
+            result.models.forEach((model) => {
                 console.log(`  • \${model.name} (\${(model.size / 1024 / 1024 / 1024).toFixed(2)} GB)`);
             });
         } catch (e) {
