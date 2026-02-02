@@ -9,10 +9,10 @@ L'AMF-OS n'est pas une application monolithique ; c'est un **noyau réactif** ba
 *   **Threading (Swarms)** : Utilisation massive de `Bun.Worker`. Chaque tâche lourde (surveillance, inférence longue, tâches système) est déportée dans un thread séparé pour garantir que le Kernel ne gèle jamais.
 *   **Gestionnaire d'Événements** : Basé sur `EventEmitter` natif, permettant une communication fluide entre les workers et l'orchestrateur.
 
-## 📡 Le Bus SSE (Server-Sent Events)
-Pour atteindre un **TTFT (Time To First Token) < 150ms**, nous utilisons un bus de données bidirectionnel.
-*   **Fichier** : `src/kernel/bus.ts`
-*   **Fonctionnement** : Au lieu d'attendre la fin d'une génération LLM, le bus capture les chunks de l'OllamaAdapter et les diffuse instantanément via un stream SSE. Cela permet une interface utilisateur "vivante" sans temps mort.
+## 📡 Le Flux d'Instruction (Streaming)
+Pour atteindre un **TTFT (Time To First Token) < 150ms**, l'AMF-OS utilise un flux asynchrone unifié (`AsyncGenerator`).
+- **Orchestrateur** : `src/core/orchestrator.ts` émet désormais chaque pensée et action en temps réel.
+- **Bénéfice** : L'interface (CLI ou Telegram) affiche instantanément le raisonnement de l'agent, offrant une transparence totale sur le cycle ReAct.
 
 ## 🩹 Boucle ReAct & Auto-Correction
 L'autonomie d'AMF-OS repose sur sa capacité à comprendre et corriger ses erreurs.

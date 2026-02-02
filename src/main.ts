@@ -48,7 +48,11 @@ async function bootLoader() {
         if (line.trim() === "exit") break;
 
         // Dispatch via orchestrator loop
-        await orchestrator.runSovereignLoop(line);
+        const stream = orchestrator.runSovereignLoop(line);
+        for await (const chunk of stream) {
+            process.stdout.write(chunk);
+        }
+        process.stdout.write("\n");
     }
 
     rl.close();

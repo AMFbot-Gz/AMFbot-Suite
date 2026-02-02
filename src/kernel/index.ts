@@ -7,7 +7,7 @@ import chalk from "chalk";
  * Event-Driven Core using Parallel Swarms (Workers)
  */
 export class SovereignKernel extends EventEmitter {
-    private workers: Map<string, Worker> = new Map();
+    private workers: Map<string, any> = new Map();
     private isRunning = false;
 
     constructor() {
