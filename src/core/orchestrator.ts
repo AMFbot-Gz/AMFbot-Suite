@@ -1,6 +1,6 @@
-import { OllamaAdapter } from "../adapters/ollama";
-import { SSEBus } from "../kernel/bus";
-import { env } from "../config/env";
+import { OllamaAdapter } from "../adapters/ollama.js";
+import { SSEBus } from "../kernel/bus.js";
+import { env } from "../config/env.js";
 import chalk from "chalk";
 
 /**

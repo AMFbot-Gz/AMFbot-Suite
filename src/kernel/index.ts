@@ -1,5 +1,5 @@
 import { EventEmitter } from "events";
-import { env } from "../config/env";
+import { env } from "../config/env.js";
 import chalk from "chalk";
 
 /**
@@ -34,14 +34,12 @@ export class SovereignKernel extends EventEmitter {
      */
     dispatch(taskId: string, payload: any) {
         this.emit("task-dispatched", { taskId, payload });
-        // In a full implementation, this finds an available worker 
-        // or spawns a dedicated one for the task
     }
 
     private spawnWorker(id: string, path: string) {
         try {
-            // Bun.Worker is zero-overhead for swarm orchestration
-            const worker = new Worker(path);
+            // Bun.Worker supports both string paths and URLs
+            const worker = new Worker(new URL("../../" + path, import.meta.url).href);
             this.workers.set(id, worker);
 
             worker.addEventListener("message", (event) => {
@@ -60,7 +58,6 @@ export class SovereignKernel extends EventEmitter {
     private setupErrorHandlers() {
         process.on("uncaughtException", (err) => {
             console.error(chalk.bgRed.white(" 🔥 KERNEL PANIC (UncaughtException) "), err);
-            // Trigger atomic rollback if critical
         });
     }
 }

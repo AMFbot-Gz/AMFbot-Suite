@@ -1,6 +1,6 @@
-import { ModelRouter } from "./router";
-import { SpeculativeEngine } from "./speculative";
-import { env } from "../config/env";
+import { ModelRouter } from "./router.js";
+import { SpeculativeEngine } from "./speculative.js";
+import { env } from "../config/env.js";
 import chalk from "chalk";
 
 export class AMFAgent {
@@ -8,7 +8,7 @@ export class AMFAgent {
     private speculator = new SpeculativeEngine();
 
     async chat(prompt: string, onUpdate: (chunk: string) => void) {
-        console.log(chalk.dim(`🔍 Routing query: "${prompt.slice(0, 30)}..."`));
+        console.log(chalk.dim(`🔍 Routing query: "\${prompt.slice(0, 30)}..."`));
 
         const { model, temperature } = this.router.route(prompt);
 
@@ -19,9 +19,9 @@ export class AMFAgent {
             }
         }
 
-        console.log(chalk.blue(`🚀 Executing with ${model}...`));
+        console.log(chalk.blue(`🚀 Executing with \${model}...`));
 
-        const response = await fetch(`${env.OLLAMA_HOST}/api/chat`, {
+        const response = await fetch(`\${env.OLLAMA_HOST}/api/chat`, {
             method: "POST",
             body: JSON.stringify({
                 model: model,
@@ -55,3 +55,5 @@ export class AMFAgent {
         }
     }
 }
+
+export { AMFAgent as Agent };

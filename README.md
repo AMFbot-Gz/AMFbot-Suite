@@ -11,21 +11,7 @@
 
 **AMFbot is a sovereign AI assistant that runs entirely on your machine, with full system control, multimedia generation, and infinite extensibility via MCP.**
 
-<div align="center">
- 
-```
-─────▄───▄
-─▄█▄─█▀█▀█─▄█▄
-   ▀▀████▄█▄████▀▀
-─────▀█▀█▀                                                                                       ▄───▄
-█▀█▀█
-█▄█▄█
-─███──▄▄
-─████▐█─█
-─████───█
-─▀▀▀▀▀▀▀
-```
-
+      
 # 🛸 AMF-OS SOVEREIGN ELITE
 ### Blueprint 2026.1 - The Event-Driven Micro-Kernel for Modern Sovereignty
 

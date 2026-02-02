@@ -1,5 +1,5 @@
 import { Telegraf } from "telegraf";
-import { env } from "../config/env";
+import { env } from "../config/env.js";
 import chalk from "chalk";
 
 /**

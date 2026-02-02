@@ -1,10 +1,11 @@
-import { SovereignKernel } from "./kernel/index";
-import { TelegramBridge } from "./adapters/telegram";
-import { SovereignOrchestrator } from "./core/orchestrator";
-import { Sentinel } from "./sentinel/audit";
-import { env } from "./config/env";
+import { SovereignKernel } from "./kernel/index.js";
+import { TelegramBridge } from "./adapters/telegram.js";
+import { SovereignOrchestrator } from "./core/orchestrator.js";
+import { Sentinel } from "./sentinel/audit.js";
+import { env } from "./config/env.js";
 import boxen from "boxen";
 import chalk from "chalk";
+import readline from "readline/promises";
 
 /**
  * MAIN BOOT LOADER
@@ -37,16 +38,20 @@ async function bootLoader() {
     }
 
     // 4. Interface d'instruction souveraine
-    process.stdout.write(chalk.magenta("amf-elite> "));
+    const rl = readline.createInterface({
+        input: process.stdin,
+        output: process.stdout
+    });
 
-    for await (const line of console) {
+    while (true) {
+        const line = await rl.question(chalk.magenta("amf-elite> "));
         if (line.trim() === "exit") break;
 
         // Dispatch via orchestrator loop
         await orchestrator.runSovereignLoop(line);
-
-        process.stdout.write(chalk.magenta("\n\namf-elite> "));
     }
+
+    rl.close();
 }
 
 bootLoader().catch((err) => {
