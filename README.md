@@ -53,13 +53,31 @@ bash setup/install.sh
 bun start
 ```
 
-### Option B : 100% Docker (Isolation Totale)
+## Option B : 100% Docker (Isolation Totale)
 Pour ceux qui préfèrent ne rien installer sur l'hôte, utilisez le mode conteneurisé.
 
 ```bash
 docker-compose up -d --build
 ```
 *Note : Assurez-vous d'avoir configuré votre `.env` au préalable.*
+
+---
+
+## ✨ Capacités d'Élite (v2.4)
+
+### 🌀 Moteur de Skills Modulaire
+AMF-OS utilise désormais un standard de **Skills dynamiques** (format `.md` + YAML) inspiré des meilleurs frameworks agentiques.
+- **Départements** : Ops & Sécurité, Ingénierie Senior, Studio Créatif, Autonomie Loki.
+- **Chargement Dynamique** : Le Kernel charge uniquement les compétences nécessaires à la tâche.
+
+### 🧠 Raisonnement Agentique (ReAct + Reflection)
+L'IA ne se contente plus de répondre ; elle réfléchit et apprend de ses actions :
+- **Boucle ReAct** : Cycle `Thought > Action > Observation` pour une précision chirurgicale.
+- **Hook Reflection** : Après chaque tâche, l'agent produit une auto-critique enregistrée dans la mémoire tactique (LanceDB), simulant une amélioration continue.
+
+### 🛡️ Tool Registry & Sécurité
+- **Permissions granulaires** : Chaque outil (shell, fs, network) possède un niveau d'accréditation (User, Admin, Root).
+- **Hardening natif** : Documentation technique de la sandbox (VM/Firecracker) et guide de durcissement.
 
 ---
 
