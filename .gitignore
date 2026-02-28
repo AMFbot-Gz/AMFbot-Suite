@@ -1,0 +1,43 @@
+# ── Secrets & Configuration ───────────────────────────────────────────────────
+.env
+.env.local
+.env.*.local
+
+# ── Environnement Python ──────────────────────────────────────────────────────
+venv/
+.venv/
+env/
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# ── Données locales (ne pas committer) ───────────────────────────────────────
+logs/
+models/
+memory/
+data/memory/
+data/
+
+# ── Outils de développement ───────────────────────────────────────────────────
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+*.log
+
+# ── macOS ─────────────────────────────────────────────────────────────────────
+.DS_Store
+.AppleDouble
+.LSOverride
+Thumbs.db
+
+# ── IDE ───────────────────────────────────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
