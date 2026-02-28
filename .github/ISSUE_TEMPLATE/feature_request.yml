@@ -1,0 +1,26 @@
+name: "🚀 Suggestion de Capacité"
+description: Proposez un nouveau module ou une amélioration du noyau.
+title: "[FEAT] "
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: goal
+    attributes:
+      label: Quel est l'objectif Souverain ?
+      description: Expliquez le cas d'usage concret pour l'utilisateur final.
+    validations:
+      required: true
+  - type: textarea
+    id: implementation
+    attributes:
+      label: Proposition Technique
+      description: Comment imaginez-vous l'intégration (nouveau module, nouvel adapter ?)
+  - type: checkboxes
+    id: benefit
+    attributes:
+      label: Avantages
+      options:
+        - label: Réduction de latence
+        - label: Amélioration de l'autonomie (Self-Healing)
+        - label: Nouvelle connectivité (Adapter)
+        - label: Sécurité/Isolation accrue

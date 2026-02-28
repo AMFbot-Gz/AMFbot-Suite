@@ -1,0 +1,85 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "amfbot-media-gen"
+version = "1.0.0"
+description = "AMFbot Media Generation Module - Video and Image generation with LTX-Video and Flux"
+readme = "README.md"
+license = "Apache-2.0"
+requires-python = ">=3.11"
+authors = [
+    { name = "AMFbot Project Contributors" }
+]
+keywords = [
+    "ai",
+    "video-generation",
+    "image-generation",
+    "ltx-video",
+    "flux",
+    "diffusers"
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+
+dependencies = [
+    "torch>=2.1.2",
+    "diffusers>=0.31.0",
+    "transformers>=4.46.0",
+    "accelerate>=1.2.0",
+    "safetensors>=0.4.5",
+    "huggingface-hub>=0.26.2",
+    "fastapi>=0.115.6",
+    "uvicorn>=0.34.0",
+    "python-multipart>=0.0.18",
+    "aiofiles>=24.1.0",
+    "httpx>=0.28.1",
+    "tqdm>=4.67.1",
+    "pillow>=11.0.0",
+    "numpy>=1.26.0",
+    "sentencepiece>=0.2.0",
+]
+
+[project.optional-dependencies]
+cuda = [
+    "nvidia-cuda-runtime-cu12>=12.4.127",
+    "nvidia-cudnn-cu12>=9.5.1.17",
+]
+dev = [
+    "pytest>=8.3.4",
+    "pytest-asyncio>=0.24.0",
+    "black>=24.10.0",
+    "ruff>=0.8.3",
+    "mypy>=1.13.0",
+]
+
+[project.scripts]
+amfbot-media-server = "api.server:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["video", "image", "api"]
+
+[tool.black]
+line-length = 100
+target-version = ["py311", "py312"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "N", "D", "UP", "B", "C4"]
+ignore = ["D100", "D104"]
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+ignore_missing_imports = true

@@ -1,0 +1,12 @@
+{
+    "id": "memory",
+    "name": "Memory",
+    "description": "Knowledge graph-based persistent memory system",
+    "command": "npx",
+    "args": [
+        "-y",
+        "@modelcontextprotocol/server-memory"
+    ],
+    "requiredArgs": [],
+    "documentation": "https://github.com/modelcontextprotocol/servers/tree/main/src/memory"
+}

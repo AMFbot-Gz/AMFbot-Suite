@@ -1,0 +1,42 @@
+name: "🐛 Rapport de Bug Sovereign"
+description: Signalez une défaillance du noyau ou de l'IA.
+title: "[BUG] "
+labels: ["bug", "triage-needed"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Merci de nous aider à stabiliser AMF-OS ! 🛸
+  - type: dropdown
+    id: component
+    attributes:
+      label: Composant Affecté
+      options:
+        - Kernel (Event-Loop/Events)
+        - Orchestrator (Reasoning/Logic)
+        - Memory (LanceDB/Vector)
+        - Adapter (Telegram/Ollama)
+        - Setup/Installer
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Contexte Matériel
+      description: RAM, GPU, Version de Bun, Modèle utilisé.
+      placeholder: |
+        - Mac M2 16GB
+        - Bun 1.1.0
+        - llama4:8b (q8_0)
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Étapes de Reproduction
+      description: Comment déclencher l'erreur ?
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs Sentinel (Audit)
+      description: Copiez les lignes pertinentes de votre audit.json.

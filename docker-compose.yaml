@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  amf-core:
+    build: .
+    container_name: amf-os-kernel
+    environment:
+      - OLLAMA_HOST=http://ollama-gpu:11434
+      - REDIS_URL=redis://cache-hot:6379
+    depends_on:
+      - cache-hot
+    restart: unless-stopped
+
+  ollama-gpu:
+    image: ollama/ollama:latest
+    container_name: amf-os-brain
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [ gpu ]
+    volumes:
+      - ollama_data:/root/.ollama
+    ports:
+      - "11434:11434"
+
+  cache-hot:
+    image: eqalpha/keydb:latest # High-speed Redis alternative
+    container_name: amf-os-cache
+    ports:
+      - "6379:6379"
+
+volumes:
+  ollama_data:
