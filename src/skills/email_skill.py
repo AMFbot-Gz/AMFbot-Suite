@@ -20,9 +20,27 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from typing import Any, Dict
 
+try:
+    import keyring
+    _KEYRING_AVAILABLE = True
+except ImportError:
+    _KEYRING_AVAILABLE = False
+
 from .base_skill import ExecutionContext, Skill, SkillResult
 
 logger = logging.getLogger(__name__)
+
+_KEYRING_SERVICE = "jarvis"
+
+
+def _get_email_password(user: str) -> str:
+    """Récupère le mot de passe email depuis keyring (macOS Keychain), puis .env en fallback."""
+    if _KEYRING_AVAILABLE and user:
+        secret = keyring.get_password(_KEYRING_SERVICE, user)
+        if secret:
+            return secret
+    # Fallback : variable d'environnement (moins sécurisé)
+    return os.getenv("EMAIL_PASSWORD", "")
 
 
 class ReadEmailsSkill(Skill):
@@ -45,11 +63,13 @@ class ReadEmailsSkill(Skill):
         imap_server = os.getenv("IMAP_SERVER", "imap.gmail.com")
         imap_port   = int(os.getenv("IMAP_PORT", "993"))
         user        = os.getenv("EMAIL_USER", "")
-        password    = os.getenv("EMAIL_PASSWORD", "")
+        password    = _get_email_password(user)
 
         if not user or not password:
             return SkillResult.error(
-                "Configuration email manquante. Définissez EMAIL_USER et EMAIL_PASSWORD dans .env"
+                "Configuration email manquante. "
+                "Exécutez scripts/setup_email_password.py pour configurer keyring, "
+                "ou définissez EMAIL_USER et EMAIL_PASSWORD dans .env"
             )
 
         try:
@@ -141,11 +161,13 @@ class SendEmailSkill(Skill):
         smtp_server = os.getenv("SMTP_SERVER", "smtp.gmail.com")
         smtp_port   = int(os.getenv("SMTP_PORT", "587"))
         user        = os.getenv("EMAIL_USER", "")
-        password    = os.getenv("EMAIL_PASSWORD", "")
+        password    = _get_email_password(user)
 
         if not user or not password:
             return SkillResult.error(
-                "Configuration email manquante. Définissez EMAIL_USER et EMAIL_PASSWORD dans .env"
+                "Configuration email manquante. "
+                "Exécutez scripts/setup_email_password.py pour configurer keyring, "
+                "ou définissez EMAIL_USER et EMAIL_PASSWORD dans .env"
             )
 
         try:
