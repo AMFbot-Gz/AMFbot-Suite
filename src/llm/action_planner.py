@@ -223,7 +223,7 @@ class ActionPlanner:
             history=history_str if history_str else "(première étape)",
         )
         full_prompt = f"{system_prompt}\n\n{user_prompt}"
-        response = await self._llm.generate(full_prompt)
+        response = await self._llm.generate(full_prompt, use_history=False)
         text = response.text.strip() if response else ""
         return self._parse_react_response(text)
 
