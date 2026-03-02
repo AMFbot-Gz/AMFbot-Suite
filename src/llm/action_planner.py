@@ -40,11 +40,14 @@ FINAL_ANSWER: <ta réponse à l'utilisateur>
 Skills disponibles :
 {skills_list}
 
-Règles :
-- Utilise FINAL_ANSWER dès que tu as toutes les informations nécessaires
+Règles STRICTES :
+- Tu DOIS toujours commencer par THOUGHT: puis ACTION: si la tâche nécessite un skill
+- N'utilise JAMAIS FINAL_ANSWER sans avoir d'abord exécuté le skill approprié (sauf pour des questions de connaissance générale)
+- Pour ouvrir une app → utilise open_app. Pour l'heure → get_time. Pour le système → get_system_info.
 - Si une action échoue, essaie une alternative ou explique pourquoi c'est impossible
 - Sois concis dans tes raisonnements
-- Les PARAMS doivent être un JSON valide
+- Les PARAMS doivent être un JSON valide sur une seule ligne
+- INTERDIT de préfixer ta réponse par "Étape N:" — commence directement par THOUGHT: ou FINAL_ANSWER:
 """
 
 REACT_STEP_TEMPLATE = """Objectif : {objective}
@@ -348,8 +351,16 @@ class ActionPlanner:
             skill = self._registry.get(name)
             if skill:
                 schema = getattr(skill, "params_schema", {})
-                params_hint = ", ".join(schema.keys()) if schema else "aucun"
-                lines.append(f"  - {name}: {skill.description} (params: {params_hint})")
+                props = schema.get("properties", {}) if isinstance(schema, dict) else {}
+                required = schema.get("required", []) if isinstance(schema, dict) else []
+                if props:
+                    example = {k: f"<{v.get('description', k)}>" for k, v in props.items() if k in required}
+                    if not example:
+                        example = {k: f"<{v.get('description', k)}>" for k, v in list(props.items())[:2]}
+                    params_hint = json.dumps(example, ensure_ascii=False)
+                else:
+                    params_hint = "{}"
+                lines.append(f"  - {name}: {skill.description} → PARAMS: {params_hint}")
         return "\n".join(lines) if lines else "  (aucun skill disponible)"
 
     @staticmethod
