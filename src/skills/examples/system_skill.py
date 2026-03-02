@@ -9,6 +9,7 @@ import asyncio
 import logging
 import platform
 import subprocess
+from datetime import datetime
 from typing import List
 
 from ..base_skill import ExecutionContext, Skill, SkillResult
@@ -197,3 +198,28 @@ class GetSystemInfoSkill(Skill):
             return "N/A"
         except Exception:
             return "N/A"
+
+
+class GetTimeSkill(Skill):
+    """Retourne la date et l'heure actuelles."""
+
+    name        = "get_time"
+    description = "Retourne la date et l'heure actuelles du système"
+    examples    = [
+        "quelle heure est-il",
+        "quelle est la date",
+        "quel jour sommes-nous",
+    ]
+    params_schema = {}
+    risk_level            = "low"
+    requires_confirmation = False
+
+    async def run(self, params: dict, ctx: ExecutionContext) -> SkillResult:
+        now = datetime.now()
+        jours = ["lundi","mardi","mercredi","jeudi","vendredi","samedi","dimanche"]
+        mois  = ["janvier","février","mars","avril","mai","juin",
+                 "juillet","août","septembre","octobre","novembre","décembre"]
+        jour  = jours[now.weekday()]
+        mois_ = mois[now.month - 1]
+        result = f"Il est {now.strftime('%H:%M:%S')}, le {jour} {now.day} {mois_} {now.year}"
+        return SkillResult.ok(result)

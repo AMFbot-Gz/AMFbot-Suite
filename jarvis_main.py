@@ -60,7 +60,7 @@ from llm.context_manager import ContextManager
 from memory.memory_manager import MemoryManager
 
 from skills.registry import SkillRegistry
-from skills.examples.system_skill   import OpenAppSkill, GetSystemInfoSkill
+from skills.examples.system_skill   import OpenAppSkill, GetSystemInfoSkill, GetTimeSkill
 from skills.clipboard_skill         import ReadClipboardSkill, WriteClipboardSkill
 from skills.browser_control_skill   import OpenUrlSkill, ScrollPageSkill
 from skills.calendar_skill          import AddEventSkill, ListEventsSkill
@@ -181,7 +181,7 @@ async def bootstrap(config: Config, gui_manager=None):
     # ── Skills ──────────────────────────────────────────────────────────────
     registry = SkillRegistry()
     for skill in [
-        OpenAppSkill(),        GetSystemInfoSkill(),
+        OpenAppSkill(),        GetSystemInfoSkill(),  GetTimeSkill(),
         ReadClipboardSkill(),  WriteClipboardSkill(),
         OpenUrlSkill(),        ScrollPageSkill(),
         AddEventSkill(),       ListEventsSkill(),

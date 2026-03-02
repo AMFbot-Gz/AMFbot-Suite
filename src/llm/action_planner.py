@@ -21,6 +21,7 @@ import json
 import logging
 import re
 from dataclasses import dataclass, field
+from datetime import datetime
 from typing import Any, Dict, List, Optional
 
 logger = logging.getLogger(__name__)
@@ -215,7 +216,12 @@ class ActionPlanner:
         Returns:
             ReActStep parsé depuis la réponse du LLM.
         """
-        system_prompt = REACT_SYSTEM_PROMPT.format(skills_list=skills_desc)
+        _now = datetime.now()
+        _jours = ["lundi","mardi","mercredi","jeudi","vendredi","samedi","dimanche"]
+        _mois  = ["janvier","février","mars","avril","mai","juin",
+                  "juillet","août","septembre","octobre","novembre","décembre"]
+        now = f"{_jours[_now.weekday()]} {_now.day} {_mois[_now.month-1]} {_now.year}, {_now.strftime('%H:%M:%S')}"
+        system_prompt = REACT_SYSTEM_PROMPT.format(skills_list=skills_desc) + f"\nDate et heure actuelles : {now}\n"
         history_str = self._format_history(history)
         user_prompt = REACT_STEP_TEMPLATE.format(
             objective=objective,
