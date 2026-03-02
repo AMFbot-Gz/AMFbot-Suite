@@ -102,7 +102,7 @@ class ActionPlanner:
     """
 
     MAX_STEPS    = 6
-    TIMEOUT_STEP = 30.0   # secondes par étape
+    TIMEOUT_STEP = 60.0   # secondes par étape
 
     def __init__(self, llm_client, registry):
         self._llm      = llm_client

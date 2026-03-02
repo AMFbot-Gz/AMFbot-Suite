@@ -11,17 +11,18 @@ Endpoints :
   GET  /api/cache     → Statistiques du cache LRU
 """
 
+import asyncio
+import html
 import json
 import logging
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, Optional
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, Form, HTTPException, Request
 from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
-from fastapi import Request
 from pydantic import BaseModel
 
 logger = logging.getLogger(__name__)
@@ -36,26 +37,40 @@ app = FastAPI(
 
 # État partagé (injecté depuis jarvis_main.py)
 _state = {
-    "orchestrator": None,
-    "registry":     None,
-    "cache":        None,
-    "config":       None,
-    "start_time":   datetime.now().isoformat(),
+    "orchestrator":   None,
+    "registry":       None,
+    "cache":          None,
+    "config":         None,
+    "state_manager":  None,
+    "action_planner": None,
+    "main_loop":      None,
+    "start_time":     datetime.now().isoformat(),
 }
 
 
-def inject_dependencies(orchestrator=None, registry=None, cache=None, config=None):
+def inject_dependencies(orchestrator=None, registry=None, cache=None, config=None,
+                        state_manager=None, action_planner=None, main_loop=None):
     """Injecte les dépendances depuis jarvis_main.py."""
-    _state["orchestrator"] = orchestrator
-    _state["registry"]     = registry
-    _state["cache"]        = cache
-    _state["config"]       = config
+    _state["orchestrator"]   = orchestrator
+    _state["registry"]       = registry
+    _state["cache"]          = cache
+    _state["config"]         = config
+    _state["state_manager"]  = state_manager
+    _state["action_planner"] = action_planner
+    _state["main_loop"]      = main_loop
     logger.info("Dashboard: dépendances injectées")
 
 
+# ── Static files ──────────────────────────────────────────────────────────────
+
+_PROJECT_ROOT = Path(__file__).parent.parent.parent
+_STATIC_DIR   = _PROJECT_ROOT / "static"
+_STATIC_DIR.mkdir(exist_ok=True)
+app.mount("/static", StaticFiles(directory=str(_STATIC_DIR)), name="static")
+
 # ── Templates ─────────────────────────────────────────────────────────────────
 
-TEMPLATES_DIR = Path(__file__).parent.parent.parent / "templates"
+TEMPLATES_DIR = _PROJECT_ROOT / "templates"
 templates     = Jinja2Templates(directory=str(TEMPLATES_DIR))
 
 
@@ -68,6 +83,10 @@ class ConfigUpdate(BaseModel):
     tts_speed:    Optional[float] = None
     vad_threshold: Optional[float] = None
     wake_words:   Optional[list]  = None
+
+
+class CommandRequest(BaseModel):
+    text: str
 
 
 # ── Routes ────────────────────────────────────────────────────────────────────
@@ -192,6 +211,95 @@ async def get_skills() -> JSONResponse:
         for s in registry.all()
     ]
     return JSONResponse({"skills": skills, "count": len(skills)})
+
+
+@app.post("/api/command")
+async def send_command(cmd: CommandRequest) -> JSONResponse:
+    """Injecte une commande texte dans le pipeline JARVIS (simule une entrée STT)."""
+    orch = _state.get("orchestrator")
+    if orch is None:
+        raise HTTPException(status_code=503, detail="Orchestrateur non disponible")
+    if not cmd.text.strip():
+        raise HTTPException(status_code=400, detail="Commande vide")
+
+    from core.state_manager import JarvisState
+    sm = _state.get("state_manager")
+    if sm:
+        await sm.transition(JarvisState.LISTENING)
+    await orch.bus.publish("stt.result", {"text": cmd.text.strip()})
+    logger.info("Dashboard /api/command: '%s'", cmd.text[:80])
+    return JSONResponse({"status": "dispatched", "command": cmd.text.strip()})
+
+
+@app.post("/api/chat", response_class=HTMLResponse)
+async def chat_endpoint(request: Request, text: str = Form(...)) -> HTMLResponse:
+    """
+    Interface de chat web — reçoit un message texte, exécute le pipeline JARVIS
+    et retourne des éléments HTML pour HTMX (insertion dans #chat-messages).
+    """
+    text = text.strip()
+    if not text:
+        return HTMLResponse("")
+
+    user_html   = html.escape(text)
+    orch        = _state.get("orchestrator")
+    action_plan = _state.get("action_planner")
+
+    # ── Cas 1 : ActionPlanner disponible ──────────────────────────────────
+    if action_plan is not None:
+        main_loop = _state.get("main_loop")
+        try:
+            from skills.base_skill import ExecutionContext
+            ctx = ExecutionContext(session_id="web-chat")
+
+            if main_loop and main_loop.is_running():
+                # Soumettre dans la boucle principale (même loop que aiohttp)
+                future = asyncio.run_coroutine_threadsafe(
+                    action_plan.plan_and_execute(objective=text, ctx=ctx),
+                    main_loop,
+                )
+                result = await asyncio.get_event_loop().run_in_executor(
+                    None, lambda: future.result(timeout=90)
+                )
+            else:
+                result = await asyncio.wait_for(
+                    action_plan.plan_and_execute(objective=text, ctx=ctx),
+                    timeout=90.0,
+                )
+            jarvis_text = result.answer or "..."
+        except Exception as e:
+            jarvis_text = f"[Erreur : {e}]"
+
+    # ── Cas 2 : Fallback via EventBus + polling de l'historique ───────────
+    elif orch is not None:
+        history_len = len(orch.history)
+        try:
+            await orch.bus.publish("stt.result", {"text": text})
+        except Exception as e:
+            jarvis_text = f"[Erreur dispatch : {e}]"
+        else:
+            jarvis_text = "[Commande envoyée — vérifiez l'onglet Dashboard]"
+            for _ in range(40):
+                await asyncio.sleep(0.5)
+                if len(orch.history) > history_len:
+                    entry = orch.history[-1]
+                    jarvis_text = entry.get("response") or entry.get("text", "...")
+                    break
+
+    else:
+        jarvis_text = "JARVIS n'est pas encore initialisé. Relancez le système."
+
+    jarvis_html = html.escape(str(jarvis_text))
+    return HTMLResponse(f"""
+<div class="msg msg-user">
+  <span class="role">VOUS</span>
+  <p>{user_html}</p>
+</div>
+<div class="msg msg-jarvis">
+  <span class="role">JARVIS</span>
+  <p>{jarvis_html}</p>
+</div>
+""")
 
 
 @app.get("/api/cache")

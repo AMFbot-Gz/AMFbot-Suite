@@ -3,209 +3,138 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>JARVIS Antigravity — Dashboard</title>
-  <style>
-    :root {
-      --bg:      #0a0a14;
-      --surface: #12121f;
-      --border:  rgba(100,150,255,0.2);
-      --accent:  #4a8fff;
-      --green:   #4adf8a;
-      --yellow:  #f0c040;
-      --red:     #ff4a6a;
-      --text:    #d0d8ff;
-      --muted:   rgba(160,180,255,0.5);
-    }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: 'SF Mono', 'Fira Code', monospace;
-      font-size: 13px;
-      line-height: 1.6;
-    }
-    header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 1rem 2rem;
-      border-bottom: 1px solid var(--border);
-      background: var(--surface);
-    }
-    header h1 { font-size: 1.2rem; color: var(--accent); letter-spacing: 2px; }
-    header .status-dot {
-      width: 8px; height: 8px; border-radius: 50%;
-      background: var(--green);
-      box-shadow: 0 0 8px var(--green);
-      display: inline-block; margin-right: 6px;
-      animation: pulse 2s infinite;
-    }
-    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
-
-    .grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      gap: 1rem;
-      padding: 1.5rem 2rem;
-    }
-    .card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 1rem 1.2rem;
-    }
-    .card h2 {
-      font-size: 0.75rem;
-      color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      margin-bottom: 0.8rem;
-      border-bottom: 1px solid var(--border);
-      padding-bottom: 0.4rem;
-    }
-    .stat { font-size: 1.8rem; font-weight: bold; color: var(--accent); }
-    .stat-label { font-size: 0.75rem; color: var(--muted); }
-
-    .badge {
-      display: inline-block;
-      padding: 2px 8px;
-      border-radius: 4px;
-      font-size: 0.7rem;
-      font-weight: bold;
-      text-transform: uppercase;
-    }
-    .badge-low      { background: rgba(74,223,138,0.15); color: var(--green); }
-    .badge-medium   { background: rgba(240,192,64,0.15);  color: var(--yellow); }
-    .badge-high     { background: rgba(255,120,60,0.15);  color: #ff784a; }
-    .badge-critical { background: rgba(255,74,106,0.15);  color: var(--red); }
-
-    table { width: 100%; border-collapse: collapse; }
-    th { text-align: left; color: var(--muted); font-weight: normal; font-size: 0.75rem; padding: 4px 0; }
-    td { padding: 5px 0; border-bottom: 1px solid rgba(100,150,255,0.08); }
-    tr:last-child td { border-bottom: none; }
-
-    .history-list { max-height: 300px; overflow-y: auto; }
-    .history-item { padding: 6px 0; border-bottom: 1px solid var(--border); }
-    .history-item .ts { color: var(--muted); font-size: 0.7rem; }
-    .history-item .user { color: var(--accent); margin: 2px 0; }
-    .history-item .response { color: var(--text); font-size: 0.85rem; }
-
-    .skills-grid { display: grid; gap: 6px; }
-    .skill-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 4px 0;
-      border-bottom: 1px solid rgba(100,150,255,0.06);
-    }
-    .skill-name { color: var(--green); }
-    .skill-desc { color: var(--muted); font-size: 0.8rem; margin-top: 1px; }
-
-    .cache-bar {
-      height: 6px;
-      background: var(--border);
-      border-radius: 3px;
-      overflow: hidden;
-      margin-top: 6px;
-    }
-    .cache-fill {
-      height: 100%;
-      background: var(--accent);
-      border-radius: 3px;
-      transition: width 0.5s;
-    }
-
-    .full-width { grid-column: 1 / -1; }
-    .two-col    { grid-column: span 2; }
-
-    .refresh-btn {
-      background: none;
-      border: 1px solid var(--border);
-      color: var(--text);
-      padding: 4px 12px;
-      border-radius: 4px;
-      cursor: pointer;
-      font-family: inherit;
-      font-size: 0.75rem;
-    }
-    .refresh-btn:hover { border-color: var(--accent); color: var(--accent); }
-
-    #last-update { color: var(--muted); font-size: 0.7rem; }
-
-    .config-form input, .config-form select {
-      background: var(--bg);
-      border: 1px solid var(--border);
-      color: var(--text);
-      padding: 4px 8px;
-      border-radius: 4px;
-      font-family: inherit;
-      font-size: 0.8rem;
-      width: 100%;
-      margin-top: 4px;
-      margin-bottom: 8px;
-    }
-    .config-form label { font-size: 0.75rem; color: var(--muted); }
-    .save-btn {
-      background: var(--accent);
-      border: none;
-      color: #fff;
-      padding: 6px 16px;
-      border-radius: 4px;
-      cursor: pointer;
-      font-family: inherit;
-      font-size: 0.8rem;
-    }
-    .save-btn:hover { opacity: 0.85; }
-    .save-msg { color: var(--green); font-size: 0.75rem; margin-top: 6px; display: none; }
-  </style>
+  <title>JARVIS Antigravity</title>
+  <script src="https://unpkg.com/htmx.org@1.9.12" defer></script>
+  <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
 
+<!-- ── Header ──────────────────────────────────────────── -->
 <header>
-  <div>
-    <span class="status-dot" id="dot"></span>
-    <h1 style="display:inline">JARVIS ANTIGRAVITY</h1>
+  <div class="header-left">
+    <div class="status-dot" id="dot"></div>
+    <span class="logo">J.A.R.V.I.S. ANTIGRAVITY</span>
   </div>
-  <div style="display:flex;align-items:center;gap:1rem">
-    <span id="last-update">—</span>
-    <button class="refresh-btn" onclick="loadAll()">⟳ Rafraîchir</button>
+  <div class="header-right">
+    <span class="state-badge" id="state-badge">—</span>
+    <span class="last-update" id="last-update">—</span>
   </div>
 </header>
 
-<div class="grid">
+<!-- ── Tabs ────────────────────────────────────────────── -->
+<nav class="tabs" role="tablist">
+  <button class="tab active" data-tab="chat"      role="tab">◈ CHAT</button>
+  <button class="tab"        data-tab="dashboard" role="tab">◈ DASHBOARD</button>
+  <button class="tab"        data-tab="skills"    role="tab">◈ SKILLS</button>
+  <button class="tab"        data-tab="settings"  role="tab">◈ SETTINGS</button>
+</nav>
 
-  <!-- Carte état -->
-  <div class="card">
-    <h2>État Système</h2>
-    <div class="stat" id="state">—</div>
-    <div class="stat-label">État courant</div>
-    <br>
-    <table>
-      <tr><td>Skills</td><td id="skills-count">—</td></tr>
-      <tr><td>Interactions</td><td id="history-count">—</td></tr>
-      <tr><td>Démarré</td><td id="start-time">—</td></tr>
-    </table>
+<!-- ═══════════════════════════════════════════════════════
+     TAB 1 — CHAT
+     ═══════════════════════════════════════════════════════ -->
+<div id="tab-chat" class="tab-content active">
+
+  <div id="chat-messages" class="chat-messages">
+    <div class="msg msg-jarvis">
+      <span class="role">JARVIS</span>
+      <p>Système initialisé. Je suis prêt à recevoir vos commandes.</p>
+    </div>
   </div>
 
-  <!-- Cache -->
-  <div class="card">
-    <h2>Cache LRU</h2>
-    <table>
-      <tr><td>Taille</td><td><span id="cache-size">—</span> / <span id="cache-max">—</span></td></tr>
-      <tr><td>Hit rate</td><td id="cache-hit">—</td></tr>
-      <tr><td>Hits</td><td id="cache-hits">—</td></tr>
-      <tr><td>Misses</td><td id="cache-misses">—</td></tr>
-      <tr><td>Évictions</td><td id="cache-evictions">—</td></tr>
-      <tr><td>TTL</td><td id="cache-ttl">—</td></tr>
-    </table>
-    <div class="cache-bar"><div class="cache-fill" id="cache-bar-fill" style="width:0%"></div></div>
-    <br>
-    <button class="refresh-btn" onclick="clearCache()" style="color:var(--red);border-color:var(--red)">🗑 Vider le cache</button>
+  <!-- Typing indicator (HTMX indicator) -->
+  <div id="chat-loading" class="htmx-indicator chat-loading">
+    <div class="typing-indicator">
+      <span></span><span></span><span></span>
+    </div>
   </div>
 
-  <!-- Config live -->
+  <!-- Chat form — HTMX post, inserts HTML response in chat-messages -->
+  <form class="chat-form"
+        hx-post="/api/chat"
+        hx-target="#chat-messages"
+        hx-swap="beforeend"
+        hx-indicator="#chat-loading"
+        hx-on::after-request="this.reset(); scrollChatToBottom();">
+    <input type="text"
+           name="text"
+           class="chat-input"
+           placeholder="Entrez une commande pour JARVIS..."
+           autocomplete="off"
+           required>
+    <button type="submit" class="chat-send-btn">ENVOYER</button>
+  </form>
+
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     TAB 2 — DASHBOARD
+     ═══════════════════════════════════════════════════════ -->
+<div id="tab-dashboard" class="tab-content">
+  <div class="grid">
+
+    <!-- État système -->
+    <div class="card">
+      <h2>État Système</h2>
+      <div class="stat" id="state">—</div>
+      <div class="stat-label">État courant</div>
+      <br>
+      <table>
+        <tr><td>Skills chargés</td>   <td id="skills-count">—</td></tr>
+        <tr><td>Interactions</td>     <td id="history-count">—</td></tr>
+        <tr><td>Démarré le</td>       <td id="start-time">—</td></tr>
+      </table>
+    </div>
+
+    <!-- Cache LRU -->
+    <div class="card">
+      <h2>Cache LRU</h2>
+      <table>
+        <tr><td>Taille</td>     <td><span id="cache-size">—</span> / <span id="cache-max">—</span></td></tr>
+        <tr><td>Hit rate</td>   <td id="cache-hit">—</td></tr>
+        <tr><td>Hits</td>       <td id="cache-hits">—</td></tr>
+        <tr><td>Misses</td>     <td id="cache-misses">—</td></tr>
+        <tr><td>Évictions</td>  <td id="cache-evictions">—</td></tr>
+        <tr><td>TTL</td>        <td id="cache-ttl">—</td></tr>
+      </table>
+      <div class="cache-bar"><div class="cache-fill" id="cache-bar-fill"></div></div>
+      <br>
+      <button class="btn-danger" onclick="clearCache()">Vider le cache</button>
+    </div>
+
+    <!-- Historique -->
+    <div class="card full-width">
+      <h2>Historique — 50 dernières interactions</h2>
+      <div class="history-list" id="history-list">Chargement...</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     TAB 3 — SKILLS
+     ═══════════════════════════════════════════════════════ -->
+<div id="tab-skills" class="tab-content">
   <div class="card">
-    <h2>Configuration</h2>
+    <h2>Skills Enregistrés</h2>
+    <div class="skills-header">
+      <span><span id="skills-total">—</span> skills disponibles</span>
+      <input class="search-input"
+             id="skills-search"
+             type="text"
+             placeholder="Rechercher un skill...">
+    </div>
+    <div id="skills-list">Chargement...</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     TAB 4 — SETTINGS
+     ═══════════════════════════════════════════════════════ -->
+<div id="tab-settings" class="tab-content">
+<div class="settings-grid">
+
+  <div class="card">
+    <h2>Configuration Live</h2>
     <div class="config-form">
       <label>Modèle LLM</label>
       <input id="cfg-llm" type="text" placeholder="mistral">
@@ -213,136 +142,26 @@
       <input id="cfg-tts-voice" type="text" placeholder="fr_FR-siwis-medium">
       <label>Vitesse TTS</label>
       <input id="cfg-tts-speed" type="number" step="0.1" min="0.5" max="2.0" placeholder="1.0">
-      <button class="save-btn" onclick="saveConfig()">Appliquer</button>
+      <button class="btn-primary" onclick="saveConfig()">Appliquer</button>
       <div class="save-msg" id="save-msg">✓ Configuration mise à jour</div>
     </div>
   </div>
 
-  <!-- Skills -->
-  <div class="card two-col">
-    <h2>Skills Enregistrés</h2>
-    <div id="skills-list">Chargement...</div>
+  <div class="card">
+    <h2>À propos</h2>
+    <table>
+      <tr><td>Version</td>     <td>JARVIS Antigravity v3.0</td></tr>
+      <tr><td>Dashboard</td>   <td>v2.1 — Chimera</td></tr>
+      <tr><td>Swagger</td>     <td><a class="link" href="/docs" target="_blank">/docs</a></td></tr>
+      <tr><td>API Status</td>  <td><a class="link" href="/api/status" target="_blank">/api/status</a></td></tr>
+      <tr><td>API Skills</td>  <td><a class="link" href="/api/skills" target="_blank">/api/skills</a></td></tr>
+      <tr><td>API History</td> <td><a class="link" href="/api/history" target="_blank">/api/history</a></td></tr>
+    </table>
   </div>
 
-  <!-- Historique -->
-  <div class="card full-width">
-    <h2>Historique des interactions (50 dernières)</h2>
-    <div class="history-list" id="history-list">Chargement...</div>
-  </div>
+</div><!-- /.settings-grid -->
+</div><!-- /#tab-settings -->
 
-</div>
-
-<script>
-  async function loadStatus() {
-    try {
-      const r = await fetch('/api/status');
-      const d = await r.json();
-      document.getElementById('state').textContent = d.status || '—';
-      document.getElementById('skills-count').textContent = d.skills_count ?? '—';
-      document.getElementById('history-count').textContent = d.history_count ?? '—';
-      document.getElementById('start-time').textContent = (d.start_time || '').slice(0,16).replace('T',' ');
-
-      // Cache
-      const c = d.cache || {};
-      document.getElementById('cache-size').textContent = c.size ?? '—';
-      document.getElementById('cache-max').textContent  = c.max_size ?? '—';
-      document.getElementById('cache-hit').textContent  = c.hit_rate != null ? c.hit_rate + '%' : '—';
-      document.getElementById('cache-hits').textContent = c.hits ?? '—';
-      document.getElementById('cache-misses').textContent = c.misses ?? '—';
-      document.getElementById('cache-evictions').textContent = c.evictions ?? '—';
-      document.getElementById('cache-ttl').textContent = c.ttl_seconds != null ? c.ttl_seconds + 's' : '—';
-      const pct = c.size && c.max_size ? (c.size / c.max_size * 100).toFixed(1) : 0;
-      document.getElementById('cache-bar-fill').style.width = pct + '%';
-
-      // Dot couleur selon état
-      const dot = document.getElementById('dot');
-      const stateColors = { IDLE: '#4adf8a', PROCESSING: '#f0c040', EXECUTING: '#4a8fff', ERROR: '#ff4a6a', SHUTDOWN: '#888' };
-      dot.style.background = stateColors[d.status] || '#4adf8a';
-    } catch(e) { console.warn('status:', e); }
-  }
-
-  async function loadSkills() {
-    try {
-      const r = await fetch('/api/skills');
-      const d = await r.json();
-      const el = document.getElementById('skills-list');
-      if (!d.skills?.length) { el.textContent = 'Aucun skill enregistré'; return; }
-      el.innerHTML = d.skills.map(s => `
-        <div class="skill-row">
-          <div>
-            <span class="skill-name">${s.name}</span>
-            <div class="skill-desc">${s.description}</div>
-          </div>
-          <span class="badge badge-${s.risk_level}">${s.risk_level}</span>
-        </div>
-      `).join('');
-    } catch(e) { console.warn('skills:', e); }
-  }
-
-  async function loadHistory() {
-    try {
-      const r = await fetch('/api/history');
-      const d = await r.json();
-      const el = document.getElementById('history-list');
-      if (!d.history?.length) { el.textContent = 'Aucune interaction encore.'; return; }
-      el.innerHTML = [...d.history].reverse().map(h => `
-        <div class="history-item">
-          <div class="ts">${h.ts}</div>
-          <div class="user">▶ ${escHtml(h.user_input)}</div>
-          <div class="response">${escHtml((h.response||'').slice(0,200))}</div>
-        </div>
-      `).join('');
-    } catch(e) { console.warn('history:', e); }
-  }
-
-  async function loadConfig() {
-    try {
-      const r = await fetch('/api/config');
-      const d = await r.json();
-      if (d.llm) document.getElementById('cfg-llm').value = d.llm.model || '';
-      if (d.tts) {
-        document.getElementById('cfg-tts-voice').value = d.tts.voice || '';
-        document.getElementById('cfg-tts-speed').value = d.tts.speed || 1.0;
-      }
-    } catch(e) {}
-  }
-
-  async function saveConfig() {
-    const payload = {
-      llm_model:  document.getElementById('cfg-llm').value || null,
-      tts_voice:  document.getElementById('cfg-tts-voice').value || null,
-      tts_speed:  parseFloat(document.getElementById('cfg-tts-speed').value) || null,
-    };
-    try {
-      await fetch('/api/config', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) });
-      const msg = document.getElementById('save-msg');
-      msg.style.display = 'block';
-      setTimeout(() => msg.style.display = 'none', 3000);
-    } catch(e) { alert('Erreur: ' + e); }
-  }
-
-  async function clearCache() {
-    if (!confirm('Vider le cache ?')) return;
-    await fetch('/api/cache', { method: 'DELETE' });
-    await loadStatus();
-  }
-
-  function escHtml(s) {
-    return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-  }
-
-  async function loadAll() {
-    await Promise.all([loadStatus(), loadSkills(), loadHistory()]);
-    document.getElementById('last-update').textContent = 'Mis à jour : ' + new Date().toLocaleTimeString();
-  }
-
-  // Chargement initial
-  loadAll();
-  loadConfig();
-
-  // Auto-refresh toutes les 5s
-  setInterval(loadStatus, 5000);
-  setInterval(loadHistory, 10000);
-</script>
+<script src="/static/script.js"></script>
 </body>
 </html>

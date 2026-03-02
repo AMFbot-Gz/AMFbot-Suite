@@ -353,10 +353,13 @@ async def bootstrap(config: Config, gui_manager=None):
 
     # ── Dashboard ────────────────────────────────────────────────────────────
     inject_dependencies(
-        orchestrator = orchestrator,
-        registry     = registry,
-        cache        = cache,
-        config       = config,
+        orchestrator   = orchestrator,
+        registry       = registry,
+        cache          = cache,
+        config         = config,
+        state_manager  = state_manager,
+        action_planner = action_planner,
+        main_loop      = asyncio.get_event_loop(),
     )
 
     return {
@@ -401,7 +404,7 @@ Exemples :
   >>> asyncio.run(action_planner.plan_and_execute("dis bonjour", ctx))
 """
     local_vars = {**components, "asyncio": asyncio}
-    loop = asyncio.get_event_loop()
+    loop = asyncio.get_running_loop()
     await loop.run_in_executor(
         None,
         lambda: code.interact(banner=banner, local=local_vars, exitmsg="\n[DEV] REPL fermé. Au revoir.")
@@ -423,7 +426,7 @@ async def audio_capture_loop(components: dict):
     logger.info("Tapez une commande (Ctrl+C ou 'bye' pour quitter)\n")
 
     await state_manager.transition(JarvisState.IDLE)
-    loop = asyncio.get_event_loop()
+    loop = asyncio.get_running_loop()
 
     while True:
         try:
@@ -438,8 +441,11 @@ async def audio_capture_loop(components: dict):
             await state_manager.transition(JarvisState.LISTENING)
             await event_bus.publish("stt.result", {"text": text})
 
-        except (EOFError, KeyboardInterrupt):
+        except KeyboardInterrupt:
             break
+        except EOFError:
+            # stdin fermé (mode daemon) — on garde le serveur web actif
+            await asyncio.sleep(3600)
         except Exception as e:
             logger.error("audio_loop: %s", e)
 
@@ -483,7 +489,7 @@ async def _async_pipeline(gui_manager=None):
         logger.info("Signal d'arrêt reçu")
         stop_event.set()
 
-    loop = asyncio.get_event_loop()
+    loop = asyncio.get_running_loop()
     for sig in (signal.SIGINT, signal.SIGTERM):
         try:
             loop.add_signal_handler(sig, _signal_handler)
